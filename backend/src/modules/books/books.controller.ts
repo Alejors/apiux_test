@@ -53,18 +53,27 @@ export class BooksController {
 
   @Get()
   @UseGuards(AuthGuard)
+  @ApiOperation({ summary: "Get All Books" })
+  @ApiResponse({ status: 200, description: "Books Collected"})
+  @ApiResponse({ status: 401, description: "Not Logged In -Unauthorized-" })
   findAll() {
     return this.booksService.findAll();
   }
 
   @Get(':id')
   @UseGuards(AuthGuard)
+  @ApiOperation({ summary: "Get Single Book" })
+  @ApiResponse({ status: 200, description: "Book Collected"})
+  @ApiResponse({ status: 401, description: "Not Logged In -Unauthorized-" })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.booksService.findOne(id);
   }
 
   @Put(':id')
   @UseGuards(AuthGuard)
+  @ApiOperation({ summary: "Edit Book" })
+  @ApiResponse({ status: 200, description: "Book Updated"})
+  @ApiResponse({ status: 401, description: "Not Logged In -Unauthorized-" })
   async update(
     @Param('id', ParseIntPipe) 
     id: number, 
@@ -91,6 +100,9 @@ export class BooksController {
   @Delete(':id')
   @UseGuards(AuthGuard)
   @HttpCode(204)
+  @ApiOperation({ summary: "Delete Book" })
+  @ApiResponse({ status: 204, description: "Book Deleted"})
+  @ApiResponse({ status: 401, description: "Not Logged In -Unauthorized-" })
   async remove(
     @Param('id', ParseIntPipe)
     id: number,

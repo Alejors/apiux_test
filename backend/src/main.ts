@@ -17,7 +17,7 @@ async function bootstrap() {
   app.setGlobalPrefix("api/v1");
 
   const config = new DocumentBuilder()
-    .setTitle("CMPC Test Documentation")
+    .setTitle("APIUX Test Documentation")
     .setDescription("API Example")
     .setVersion("1.0")
     .addTag("Default")

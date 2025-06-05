@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
   HttpCode,
 } from "@nestjs/common";
-import { ApiTags, ApiResponse } from "@nestjs/swagger";
+import { ApiTags, ApiResponse, ApiOperation } from "@nestjs/swagger";
 import { AuthService } from "./auth.service";
 import { CreateUserDto, AuthCredentialsDto } from "./dto";
 import { CookieInterceptor } from "./interceptors/cookie.interceptor";
@@ -21,6 +21,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post("register")
+  @ApiOperation({ summary: "Register to the Service" })
   @ApiResponse({ status: 201, description: "Registration Successful" })
   @ApiResponse({ status: 409, description: "Email is Already Registered" })
   async register(
@@ -43,6 +44,7 @@ export class AuthController {
 
   @Post("login")
   @HttpCode(200)
+  @ApiOperation({ summary: "Log In to the Service" })
   @ApiResponse({ status: 200, description: "User logged in Successfully" })
   @ApiResponse({ status: 401, description: "Unauthorized" })
   @UseInterceptors(CookieInterceptor)
@@ -59,6 +61,7 @@ export class AuthController {
   @Post("logout")
   @HttpCode(204)
   @UseInterceptors(ClearCookieInterceptor)
+  @ApiOperation({ summary: "Log Out" })
   @ApiResponse({ status: 204, description: "User logged out successfully" })
   async logoutUser(): Promise<void> {}
 }
