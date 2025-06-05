@@ -14,7 +14,8 @@ import { EditorialModel } from "../../../models/editorial.model";
 import { buildSequelizeFilters } from "src/common/utils/sequelizeFilters.util";
 import { CreateBookEventDto } from "src/modules/booksEvents/dto/bookEvent.dto";
 import { EventTypeEnum } from "src/common/enums/eventType.enum";
-import { CREATE_BOOK_EVENT } from "src/constants";
+import { CREATE_AUTHOR_EVENT, CREATE_BOOK_EVENT } from "src/constants";
+import { CreateAuthorEventDto } from "src/modules/authorEvents/dto/authorEvent.dto";
 
 @Injectable()
 export class BookSequelizeRepository implements IBookRepository {
@@ -51,17 +52,18 @@ export class BookSequelizeRepository implements IBookRepository {
     );
   }
 
-  private async findOrCreateAuthor(name: string, transaction): Promise<AuthorModel> {
+  private async findOrCreateAuthor(name: string, transaction, userId: number): Promise<AuthorModel> {
     const authorName = name.toLowerCase();
     let author = await this.authorModel.findOne({ where: { name: authorName }, transaction });
     if (!author) {
       author = await this.authorModel.create({ name: authorName }, { transaction });
-      // TODO: Crear el evento de Author
+      const authorEvent = new CreateAuthorEventDto(author.id, userId, EventTypeEnum.CREATE, author);
+      this.eventEmitter.emit(CREATE_AUTHOR_EVENT, authorEvent);
     }
     return author;
   }
 
-  private async findOrCreateEditorial(name: string, transaction: any): Promise<EditorialModel> {
+  private async findOrCreateEditorial(name: string, transaction: any, userId: number): Promise<EditorialModel> {
     const editorialName = name.toLowerCase();
     let editorial = await this.editorialModel.findOne({ where: { name: editorialName }, transaction });
     if (!editorial) {
@@ -71,7 +73,7 @@ export class BookSequelizeRepository implements IBookRepository {
     return editorial;
   }
 
-  private async findOrCreateGenre(name: string, transaction: any): Promise<GenreModel> {
+  private async findOrCreateGenre(name: string, transaction: any, userId: number): Promise<GenreModel> {
     const genreName = name.toLowerCase();
     let genre = await this.genreModel.findOne({ where: { name: genreName }, transaction });
     if (!genre) {
@@ -83,9 +85,9 @@ export class BookSequelizeRepository implements IBookRepository {
 
   async create(book: CreateBookDto, userId: number): Promise<Book> {
     return await this.sequelize.transaction(async (t) => {
-      const author = await this.findOrCreateAuthor(book.author, t);
-      const editorial = await this.findOrCreateEditorial(book.editorial, t);
-      const genre = await this.findOrCreateGenre(book.genre, t);
+      const author = await this.findOrCreateAuthor(book.author, t, userId);
+      const editorial = await this.findOrCreateEditorial(book.editorial, t, userId);
+      const genre = await this.findOrCreateGenre(book.genre, t, userId);
 
       const createdBook = await this.bookModel.create(
         {
@@ -173,15 +175,15 @@ export class BookSequelizeRepository implements IBookRepository {
     return await this.sequelize.transaction(async (t) => {
       const updateData = {...data}
       if (data.genre !== undefined) {
-        const genre = await this.findOrCreateGenre(data.genre, t);
+        const genre = await this.findOrCreateGenre(data.genre, t, userId);
         updateData['genre_id'] = genre.id;
       }
       if (data.author !== undefined) {
-        const author = await this.findOrCreateAuthor(data.author, t);
+        const author = await this.findOrCreateAuthor(data.author, t, userId);
         updateData['author_id'] = author.id;
       }
       if (data.editorial !== undefined) {
-        const editorial = await this.findOrCreateEditorial(data.editorial, t);
+        const editorial = await this.findOrCreateEditorial(data.editorial, t, userId);
         updateData['editorial_id'] = editorial.id;
       }
       
