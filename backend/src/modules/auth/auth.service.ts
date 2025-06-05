@@ -15,7 +15,7 @@ export class AuthService {
   constructor(
     private usersService: UserService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   private async hashPassword(password: string): Promise<string> {
     return await bcrypt.hash(password, SALT);
@@ -26,6 +26,10 @@ export class AuthService {
     hashedPassword: string,
   ): Promise<boolean> {
     return await bcrypt.compare(password, hashedPassword);
+  }
+
+  verifyToken(token: string) {
+    return this.jwtService.verify(token);
   }
 
   createToken(user: User) {
