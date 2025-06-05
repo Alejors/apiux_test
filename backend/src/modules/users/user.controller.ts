@@ -15,11 +15,6 @@ import { User } from "./user.entity";
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  create(@Body() user: User) {
-    return this.userService.create(user);
-  }
-
   @Get()
   findAll() {
     return this.userService.findAll();

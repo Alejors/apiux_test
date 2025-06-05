@@ -4,6 +4,7 @@ import { LoggerModule } from "./modules/logger/logger.module";
 import { UserModule } from "./modules/users/user.module";
 import { ConfigModule } from "@nestjs/config";
 import { SequelizeModule } from "@nestjs/sequelize";
+import { UserModel } from "./models";
 
 // TODO: agregar books y export modules
 @Module({
@@ -16,7 +17,7 @@ import { SequelizeModule } from "@nestjs/sequelize";
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      autoLoadModels: true,
+      models: [UserModel]
     }),
     AuthModule,
     UserModule,

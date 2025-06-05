@@ -25,7 +25,10 @@ export class UserSequelizeRepository implements IUserRepository {
   async create(user: CreateUserDto): Promise<User> {
     const { name, email, password } = user;
     const created = await this.userModel.create({ name, email, password });
-    return this.toDomain(created);
+    if (created) {
+      return this.toDomain(created.dataValues);
+    }
+    throw new Error("Something Went Wrong")
   }
 
   async findAll(): Promise<User[]> {
