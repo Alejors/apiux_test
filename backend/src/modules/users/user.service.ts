@@ -2,12 +2,12 @@ import { Injectable, Inject, NotFoundException } from "@nestjs/common";
 import { IUserRepository } from "./user.interface";
 import { User } from "./user.entity";
 import { CreateUserDto, UpdateUserDto } from "../auth/dto";
-import { ResponseUserDTO } from "./dto/response-user.dto";
+import { USERS_INTERFACE } from "src/constants";
 
 @Injectable()
 export class UserService {
   constructor(
-    @Inject("IUserRepository") private readonly userRepository: IUserRepository,
+    @Inject(USERS_INTERFACE) private readonly userRepository: IUserRepository,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
