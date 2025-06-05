@@ -5,9 +5,18 @@ import { BooksController } from './books.controller';
 import { BookSequelizeRepository } from './repositories/sequelizeBook.repository';
 import { AuthorModel, BookModel, EditorialModel, GenreModel } from 'src/models';
 import { BOOKS_INTERFACE } from 'src/constants';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [SequelizeModule.forFeature([BookModel, GenreModel, AuthorModel, EditorialModel])],
+  imports: [
+    SequelizeModule.forFeature([
+      BookModel, 
+      GenreModel, 
+      AuthorModel, 
+      EditorialModel
+    ]),
+    AuthModule,
+  ],
   controllers: [BooksController],
   providers: [
     {

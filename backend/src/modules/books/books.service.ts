@@ -9,8 +9,8 @@ export class BooksService {
   constructor(
     @Inject(BOOKS_INTERFACE) private readonly booksRepository: IBookRepository
   ){}
-  async create(createBookDto: CreateBookDto): Promise<DetailedBook | null> {
-    const bookCreated = await this.booksRepository.create(createBookDto);
+  async create(createBookDto: CreateBookDto, userId: number): Promise<DetailedBook | null> {
+    const bookCreated = await this.booksRepository.create(createBookDto, userId);
     return await this.booksRepository.findOne({ id: bookCreated.id });
   }
 
@@ -22,11 +22,11 @@ export class BooksService {
     return `This action returns a #${id} book`;
   }
 
-  update(id: number, updateBookDto: UpdateBookDto) {
+  update(id: number, updateBookDto: UpdateBookDto, userId: number) {
     return `This action updates a #${id} book`;
   }
 
-  remove(id: number) {
+  remove(id: number, userId: number) {
     return `This action removes a #${id} book`;
   }
 }

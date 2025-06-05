@@ -1,15 +1,20 @@
+import { Sequelize } from "sequelize-typescript";
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel, InjectConnection } from "@nestjs/sequelize";
-import { Sequelize } from "sequelize-typescript";
-import { BookModel } from "../../../models/book.model";
-import { AuthorModel } from "../../../models/author.model";
-import { EditorialModel } from "../../../models/editorial.model";
-import { GenreModel } from "../../../models/genre.model";
+
 import { Book } from "../books.entity";
 import { IBookRepository } from "../books.interface";
-import { CreateBookDto, UpdateBookDto } from "../dto/books.dto";
-import { buildSequelizeFilters } from "src/common/utils/sequelizeFilters.util";
+import { BookModel } from "../../../models/book.model";
+import { GenreModel } from "../../../models/genre.model";
 import { DetailedBook } from "../detailedBook.projection";
+import { AuthorModel } from "../../../models/author.model";
+import { CreateBookDto, UpdateBookDto } from "../dto/books.dto";
+import { EditorialModel } from "../../../models/editorial.model";
+import { buildSequelizeFilters } from "src/common/utils/sequelizeFilters.util";
+import { CreateBookEventDto } from "src/modules/booksEvents/dto/bookEvent.dto";
+import { EventTypeEnum } from "src/common/enums/eventType.enum";
+import { BOOK_CREATED_EVENT } from "src/constants";
 
 @Injectable()
 export class BookSequelizeRepository implements IBookRepository {
@@ -19,6 +24,7 @@ export class BookSequelizeRepository implements IBookRepository {
     @InjectModel(EditorialModel) private readonly editorialModel: typeof EditorialModel,
     @InjectModel(GenreModel) private readonly genreModel: typeof GenreModel,
     @InjectConnection() private readonly sequelize: Sequelize,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   private toDomain(bookModel: BookModel): Book {
@@ -45,12 +51,13 @@ export class BookSequelizeRepository implements IBookRepository {
     );
   }
 
-  async create(book: CreateBookDto): Promise<Book> {
+  async create(book: CreateBookDto, userId: number): Promise<Book> {
     const authorName = book.author.toLowerCase();
     const editorialName = book.editorial.toLowerCase();
     const genreName = book.genre.toLowerCase();
 
     return await this.sequelize.transaction(async (t) => {
+      
       let author = await this.authorModel.findOne({ where: { name: authorName }, transaction: t });
       if (!author) {
         author = await this.authorModel.create({ name: authorName }, { transaction: t });
@@ -66,7 +73,7 @@ export class BookSequelizeRepository implements IBookRepository {
         genre = await this.genreModel.create({ name: genreName }, { transaction: t });
       }
 
-      const created = await this.bookModel.create(
+      const createdBook = await this.bookModel.create(
         {
           ...book,
           author_id: author.id,
@@ -75,8 +82,8 @@ export class BookSequelizeRepository implements IBookRepository {
         },
         { transaction: t },
       );
-
-      return this.toDomain(created);
+      this.eventEmitter.emit(BOOK_CREATED_EVENT, {book_id: createdBook.id, user_id: userId, event_type: EventTypeEnum.CREATE, previous_state: null, new_state: createdBook});
+      return this.toDomain(createdBook);
     });
   }
 

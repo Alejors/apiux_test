@@ -3,9 +3,9 @@ import { Book } from "./books.entity";
 import { DetailedBook } from "./detailedBook.projection";
 
 export interface IBookRepository {
-  create(book: CreateBookDto): Promise<Book>;
+  create(book: CreateBookDto, userId: number): Promise<Book>;
   findAll(): Promise<DetailedBook[]>;
   findOne(filters: object): Promise<DetailedBook | null>;
-  update(id: number, user: UpdateBookDto): Promise<Book>;
-  remove(id: number): Promise<void>;
+  update(id: number, book: UpdateBookDto, userId: number): Promise<Book>;
+  remove(id: number, userId: number): Promise<void>;
 }
