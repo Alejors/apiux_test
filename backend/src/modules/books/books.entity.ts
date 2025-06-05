@@ -2,10 +2,10 @@ export class Book {
   constructor(
     public readonly id: number,
     public title: string,
-    public authorId: number,
-    public editorialId: number,
+    public author_id: number,
+    public editorial_id: number,
     public price: number,
     public availability: boolean,
-    public genreId: number,
+    public genre_id: number,
   ) {}
 }
