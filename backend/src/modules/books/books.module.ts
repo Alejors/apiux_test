@@ -6,6 +6,7 @@ import { BookSequelizeRepository } from './repositories/sequelizeBook.repository
 import { AuthorModel, BookModel, EditorialModel, GenreModel } from 'src/models';
 import { BOOKS_INTERFACE } from 'src/constants';
 import { AuthModule } from '../auth/auth.module';
+import { GcsService } from 'src/frameworks/cloud-storage/gcs.service';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { AuthModule } from '../auth/auth.module';
       useClass: BookSequelizeRepository,
     },
     BooksService,
+    GcsService,
   ],
-  exports: [SequelizeModule]
+  exports: [SequelizeModule, GcsService]
 })
 export class BooksModule {}

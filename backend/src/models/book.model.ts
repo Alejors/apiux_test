@@ -55,6 +55,12 @@ export class BookModel extends Model {
   })
   genre_id: number;
 
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  image_url: string;
+
   @BelongsTo(() => AuthorModel, { as: 'author', foreignKey: 'author_id' })
   author: AuthorModel;
 
