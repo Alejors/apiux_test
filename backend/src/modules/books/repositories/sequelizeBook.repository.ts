@@ -82,7 +82,8 @@ export class BookSequelizeRepository implements IBookRepository {
         },
         { transaction: t },
       );
-      this.eventEmitter.emit(BOOK_CREATED_EVENT, {book_id: createdBook.id, user_id: userId, event_type: EventTypeEnum.CREATE, previous_state: null, new_state: createdBook});
+      const eventBook = new CreateBookEventDto(createdBook.id, userId, EventTypeEnum.CREATE, createdBook);
+      this.eventEmitter.emit(BOOK_CREATED_EVENT, eventBook);
       return this.toDomain(createdBook);
     });
   }
