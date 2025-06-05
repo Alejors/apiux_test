@@ -32,7 +32,7 @@ export class BookEventModel extends Model {
 
   @Column({
     type: DataType.JSONB,
-    allowNull: false,
+    allowNull: true,
   })
   previous_state: object;
 

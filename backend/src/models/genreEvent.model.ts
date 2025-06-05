@@ -32,7 +32,7 @@ export class GenreEventModel extends Model {
 
   @Column({
     type: DataType.JSONB,
-    allowNull: false,
+    allowNull: true,
   })
   previous_state: object;
 

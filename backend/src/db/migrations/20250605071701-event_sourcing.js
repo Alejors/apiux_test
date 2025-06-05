@@ -5,6 +5,11 @@ module.exports = {
   async up(queryInterface, Sequelize) {
 
     await queryInterface.createTable('book_events', {
+      id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
       book_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -25,7 +30,7 @@ module.exports = {
       },
       previous_state: {
         type: Sequelize.JSONB,
-        allowNull: false,
+        allowNull: true,
       },
       new_state: {
         type: Sequelize.JSONB,
@@ -35,6 +40,11 @@ module.exports = {
     });
 
     await queryInterface.createTable('editorial_events', {
+      id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
       editorial_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -55,7 +65,7 @@ module.exports = {
       },
       previous_state: {
         type: Sequelize.JSONB,
-        allowNull: false,
+        allowNull: true,
       },
       new_state: {
         type: Sequelize.JSONB,
@@ -65,6 +75,11 @@ module.exports = {
     });
 
     await queryInterface.createTable('author_events', {
+      id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
       author_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -85,7 +100,7 @@ module.exports = {
       },
       previous_state: {
         type: Sequelize.JSONB,
-        allowNull: false,
+        allowNull: true,
       },
       new_state: {
         type: Sequelize.JSONB,
@@ -95,6 +110,11 @@ module.exports = {
     });
 
     await queryInterface.createTable('genre_events', {
+      id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
       genre_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -115,7 +135,7 @@ module.exports = {
       },
       previous_state: {
         type: Sequelize.JSONB,
-        allowNull: false,
+        allowNull: true,
       },
       new_state: {
         type: Sequelize.JSONB,
