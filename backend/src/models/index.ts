@@ -3,3 +3,7 @@ export * from "./book.model";
 export * from "./author.model";
 export * from "./editorial.model";
 export * from "./genre.model";
+export * from "./bookEvent.model";
+export * from "./authorEvent.model";
+export * from "./editorialEvent.model";
+export * from "./genreEvent.model";
