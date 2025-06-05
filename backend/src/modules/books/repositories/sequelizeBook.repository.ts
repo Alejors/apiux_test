@@ -3,19 +3,27 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel, InjectConnection } from "@nestjs/sequelize";
 
+import {
+  CREATE_AUTHOR_EVENT,
+  CREATE_BOOK_EVENT,
+  CREATE_EDITORIAL_EVENT,
+} from "src/constants";
+
 import { Book } from "../books.entity";
 import { IBookRepository } from "../books.interface";
-import { BookModel } from "../../../models/book.model";
-import { GenreModel } from "../../../models/genre.model";
+import {
+  BookModel,
+  GenreModel,
+  AuthorModel,
+  EditorialModel,
+} from "../../../models/";
 import { DetailedBook } from "../detailedBook.projection";
-import { AuthorModel } from "../../../models/author.model";
+import { EventTypeEnum } from "src/common/enums/eventType.enum";
 import { CreateBookDto, UpdateBookDto } from "../dto/books.dto";
-import { EditorialModel } from "../../../models/editorial.model";
 import { buildSequelizeFilters } from "src/common/utils/sequelizeFilters.util";
 import { CreateBookEventDto } from "src/modules/booksEvents/dto/bookEvent.dto";
-import { EventTypeEnum } from "src/common/enums/eventType.enum";
-import { CREATE_AUTHOR_EVENT, CREATE_BOOK_EVENT } from "src/constants";
 import { CreateAuthorEventDto } from "src/modules/authorEvents/dto/authorEvent.dto";
+import { CreateEditorialEventDto } from "src/modules/editorialEvents/dto/editorialEvent.dto";
 
 @Injectable()
 export class BookSequelizeRepository implements IBookRepository {
@@ -68,7 +76,8 @@ export class BookSequelizeRepository implements IBookRepository {
     let editorial = await this.editorialModel.findOne({ where: { name: editorialName }, transaction });
     if (!editorial) {
       editorial = await this.editorialModel.create({ name: editorialName }, { transaction });
-      // TODO: Crear el evento de Editorial
+      const editorialEvent = new CreateEditorialEventDto(editorial.id, userId, EventTypeEnum.CREATE, editorial)
+      this.eventEmitter.emit(CREATE_EDITORIAL_EVENT, editorialEvent);
     }
     return editorial;
   }
