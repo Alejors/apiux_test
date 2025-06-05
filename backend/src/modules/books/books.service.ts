@@ -14,8 +14,8 @@ export class BooksService {
     return await this.booksRepository.findOne({ id: bookCreated.id });
   }
 
-  findAll() {
-    return `This action returns all books`;
+  async findAll(): Promise<DetailedBook[]> {
+    return await this.booksRepository.findAll();
   }
 
   findOne(id: number) {

@@ -7,6 +7,7 @@ import {
   CREATE_AUTHOR_EVENT,
   CREATE_BOOK_EVENT,
   CREATE_EDITORIAL_EVENT,
+  CREATE_GENRE_EVENT,
 } from "src/constants";
 
 import { Book } from "../books.entity";
@@ -24,6 +25,7 @@ import { buildSequelizeFilters } from "src/common/utils/sequelizeFilters.util";
 import { CreateBookEventDto } from "src/modules/booksEvents/dto/bookEvent.dto";
 import { CreateAuthorEventDto } from "src/modules/authorEvents/dto/authorEvent.dto";
 import { CreateEditorialEventDto } from "src/modules/editorialEvents/dto/editorialEvent.dto";
+import { CreateGenreEventDto } from "src/modules/genreEvents/dto/genreEvent.dto";
 
 @Injectable()
 export class BookSequelizeRepository implements IBookRepository {
@@ -87,7 +89,8 @@ export class BookSequelizeRepository implements IBookRepository {
     let genre = await this.genreModel.findOne({ where: { name: genreName }, transaction });
     if (!genre) {
       genre = await this.genreModel.create({ name: genreName }, { transaction });
-      // TODO: Crear el evento de Genero
+      const genreEvent = new CreateGenreEventDto(genre.id, userId, EventTypeEnum.CREATE, genre);
+      this.eventEmitter.emit(CREATE_GENRE_EVENT, genreEvent);
     }
     return genre;
   }

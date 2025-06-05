@@ -12,6 +12,7 @@ import {
   BookEventModel,
   AuthorEventModel,
   EditorialEventModel,
+  GenreEventModel,
 } from "./models";
 import jwtConfig from "./config/jwt.config";
 import { AuthModule } from "./modules/auth/auth.module";
@@ -20,8 +21,9 @@ import { BooksModule } from './modules/books/books.module';
 import { BooksEventsModule } from "./modules/booksEvents/bookEvent.module";
 import { AuthorEventsModule } from "./modules/authorEvents/authorEvent.module";
 import { EditorialEventsModule } from "./modules/editorialEvents/editorialEvent.module";
+import { GenreEventsModule } from "./modules/genreEvents/genreEvent.module";
 
-// TODO: agregar books y export modules
+// TODO: agregar export modules
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -44,6 +46,7 @@ import { EditorialEventsModule } from "./modules/editorialEvents/editorialEvent.
         BookEventModel,
         AuthorEventModel,
         EditorialEventModel,
+        GenreEventModel,
       ],
     }),
     EventEmitterModule.forRoot(),
@@ -53,6 +56,7 @@ import { EditorialEventsModule } from "./modules/editorialEvents/editorialEvent.
     BooksEventsModule,
     AuthorEventsModule,
     EditorialEventsModule,
+    GenreEventsModule,
   ],
 })
 export class AppModule {}
