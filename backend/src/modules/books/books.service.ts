@@ -22,11 +22,12 @@ export class BooksService {
     return `This action returns a #${id} book`;
   }
 
-  update(id: number, updateBookDto: UpdateBookDto, userId: number) {
-    return `This action updates a #${id} book`;
+  async update(id: number, updateBookDto: UpdateBookDto, userId: number) {
+    const bookUpdated = await this.booksRepository.update(id, updateBookDto, userId);
+    return await this.booksRepository.findOne({ id: bookUpdated.id });
   }
 
-  remove(id: number, userId: number) {
-    return `This action removes a #${id} book`;
+  async remove(id: number, userId: number): Promise<void> {
+    await this.booksRepository.remove(id, userId);
   }
 }

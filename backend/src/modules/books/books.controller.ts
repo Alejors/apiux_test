@@ -8,6 +8,7 @@ import {
   Delete,
   ParseIntPipe,
   UseGuards,
+  HttpCode,
 } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 
@@ -64,25 +65,38 @@ export class BooksController {
 
   @Put(':id')
   @UseGuards(AuthGuard)
-  update(
+  async update(
     @Param('id', ParseIntPipe) 
     id: number, 
     @Body() 
     updateBookDto: UpdateBookDto,
     @ExtractUser()
     userId: number,
-  ) {
-    return this.booksService.update(id, updateBookDto, userId);
+  ): Promise<ApiResponseType<ResponseBookDTO>> {
+    let message;
+    let code;
+    let data;
+    const response = await this.booksService.update(id, updateBookDto, userId);
+    if (response) {
+      message = "Book Updated";
+      code = SUCCESS_CODE;
+      data = ResponseBookDTO.fromProjection(response);
+    } else {
+      message = "Book Was Not Updated";
+      code = FAILED_CODE;
+    }
+    return { message, code, data };
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard)
-  remove(
+  @HttpCode(204)
+  async remove(
     @Param('id', ParseIntPipe)
     id: number,
     @ExtractUser()
     userId: number,
-  ) {
-    return this.booksService.remove(id, userId);
+  ): Promise<void> {
+    return await this.booksService.remove(id, userId);
   }
 }
