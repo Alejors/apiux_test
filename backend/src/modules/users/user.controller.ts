@@ -1,7 +1,6 @@
 import {
   Controller,
   Get,
-  Post,
   Put,
   Delete,
   Body,
@@ -10,23 +9,26 @@ import {
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { User } from "./user.entity";
+import { ResponseUserDTO } from "./dto/response-user.dto";
+import { UpdateUserDto } from "../auth/dto";
 
 @Controller("users")
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  async findAll(): Promise<ResponseUserDTO[]> {
+    const users = await this.userService.findAll();
+    return users.map((user: User) => ResponseUserDTO.fromUser(user));
   }
 
   @Put(":id")
-  update(@Param("id", ParseIntPipe) id: number, @Body() user: User) {
-    return this.userService.update(id, user);
+  async update(@Param("id", ParseIntPipe) id: number, @Body() user: UpdateUserDto): Promise<ResponseUserDTO> {
+    return await this.userService.update(id, user);
   }
 
   @Delete(":id")
-  remove(@Param("id", ParseIntPipe) id: number) {
-    return this.userService.remove(id);
+  async remove(@Param("id", ParseIntPipe) id: number): Promise<void> {
+    await this.userService.remove(id);
   }
 }
