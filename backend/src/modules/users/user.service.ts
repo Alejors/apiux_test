@@ -10,9 +10,8 @@ export class UserService {
     @Inject("IUserRepository") private readonly userRepository: IUserRepository,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<ResponseUserDTO> {
-    const userCreated = await this.userRepository.create(createUserDto);
-    return ResponseUserDTO.fromUser(userCreated);
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    return await this.userRepository.create(createUserDto);
   }
 
   async findAll(): Promise<User[]> {
@@ -27,16 +26,13 @@ export class UserService {
     return user;
   }
 
-  async update(
-    id: number,
-    updateUserDto: UpdateUserDto,
-  ): Promise<ResponseUserDTO> {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const userExist = await this.findOne({ id });
     const userUpdated = await this.userRepository.update(
       userExist.id,
       updateUserDto,
     );
-    return ResponseUserDTO.fromUser(userUpdated);
+    return userUpdated;
   }
 
   async remove(id: number): Promise<void> {

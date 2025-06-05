@@ -3,14 +3,11 @@ import { AuthService } from "./auth.service";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { AuthController } from "./auth.controller";
-import { UserService } from "../users/user.service";
-import { UserSequelizeRepository } from "../users/repositories/sequelizeUser.repository";
-import { SequelizeModule } from "@nestjs/sequelize";
-import { UserModel } from "src/models";
+import { UserModule } from "../users/user.module";
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([UserModel]),
+    UserModule,
     ConfigModule,
     JwtModule.registerAsync({
       useFactory: (config: ConfigService) => ({
@@ -23,13 +20,6 @@ import { UserModel } from "src/models";
     }),
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    {
-      provide: "IUserRepository",
-      useClass: UserSequelizeRepository,
-    },
-    UserService,
-  ],
+  providers: [AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

@@ -1,6 +1,11 @@
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import {
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+} from "@nestjs/common";
+import { Observable } from "rxjs";
+import { tap } from "rxjs/operators";
 
 @Injectable()
 export class ClearCookieInterceptor implements NestInterceptor {
@@ -9,8 +14,8 @@ export class ClearCookieInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       tap(() => {
-        response.clearCookie('access_token', { httpOnly: true, path: '/'});
-      })
+        response.clearCookie("access_token", { httpOnly: true, path: "/" });
+      }),
     );
   }
 }

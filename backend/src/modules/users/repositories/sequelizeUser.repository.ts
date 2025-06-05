@@ -28,18 +28,18 @@ export class UserSequelizeRepository implements IUserRepository {
     if (created) {
       return this.toDomain(created.dataValues);
     }
-    throw new Error("Something Went Wrong")
+    throw new Error("Something Went Wrong");
   }
 
   async findAll(): Promise<User[]> {
     const users = await this.userModel.findAll();
-    return users.map((user) => this.toDomain(user));
+    return users.map((user: UserModel) => this.toDomain(user));
   }
 
   async findOne(filters: object): Promise<User | null> {
     const processedFilters = buildSequelizeFilters(filters);
     const user = await this.userModel.findOne({ where: processedFilters });
-    return user ? this.toDomain(user) : null;
+    return user ? this.toDomain(user.dataValues) : null;
   }
 
   async update(id: number, data: UpdateUserDto): Promise<User> {

@@ -1,5 +1,5 @@
 import { User } from "../user.entity";
-import { IsString, IsEmail, IsNumber } from 'class-validator';
+import { IsString, IsEmail, IsNumber } from "class-validator";
 
 export class ResponseUserDTO {
   @IsNumber()
