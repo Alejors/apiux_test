@@ -14,6 +14,8 @@ async function bootstrap() {
     }),
   );
 
+  app.setGlobalPrefix("api/v1");
+
   const config = new DocumentBuilder()
     .setTitle("CMPC Test Documentation")
     .setDescription("API Example")
