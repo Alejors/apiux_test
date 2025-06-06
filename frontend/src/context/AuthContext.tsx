@@ -17,12 +17,14 @@ export const AuthProvider: React.FC = ({ children }) => {
         if (res.ok) {
           setIsAuthenticated(true);
         } else {
-          setIsAuthenticated(false);
-          Notiflix.Notify.failure('Session expired, please log in again.');
+          if (isAuthenticated) {
+            setIsAuthenticated(false);
+            Notiflix.Notify.failure('Session expired, please log in again.');
+          }
         }
       })
       .catch(error => {
-        setIsAuthenticated(false);
+        if (isAuthenticated) setIsAuthenticated(false);
         Notiflix.Notify.failure(`Error checking authentication: ${error instanceof Error ? error.message : 'Unknown error'}`);
       })
   }, [isAuthenticated]);
