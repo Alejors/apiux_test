@@ -68,7 +68,7 @@ export default function Login() {
             {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
           </div>
 
-          <button className="bg-blue-500 text-white py-2 rounded hover:bg-blue-600">Inica Sesión</button>
+          <button className="bg-blue-500 text-white py-2 rounded hover:bg-blue-600 cursor-pointer">Inica Sesión</button>
         </form>
         <p className="text-center text-sm mt-4">
           ¿No tienes cuenta? <Link to="/register" className="text-blue-500 hover:underline">Regístrate aquí</Link>

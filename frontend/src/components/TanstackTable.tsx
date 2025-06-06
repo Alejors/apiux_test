@@ -18,7 +18,7 @@ const columns = [
     header: 'Portada',
     cell: info => (
       <img
-        src={info.getValue()}
+        src={info.getValue() ? info.getValue() : "https://placehold.co/400"}
         alt="Portada"
         className="w-16 h-24 object-cover rounded"
       />

@@ -2,6 +2,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Notify } from "notiflix";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { apiFetch } from "../services/requests";
@@ -14,12 +15,20 @@ const bookSchema = z.object({
   author: z.string().min(1, { message: "El autor es obligatorio" }),
   editorial: z.string().min(1, { message: "La editorial es obligatoria" }),
   genre: z.string().min(1, { message: "El género es obligatorio" }),
+  price: z.coerce.number().positive("El precio debe ser mayor a 0"),
+  availability: z.boolean(),
   image: z
     .any()
     .optional()
     .refine(
-      (files) => ["image/png", "image/jpeg"].includes(files?.[0]?.type),
-      "Solo se permiten imágenes PNG o JPEG"
+      (file) =>
+        !file ||
+        !(file instanceof FileList) ||
+        file.length === 0 ||
+        ["image/jpeg", "image/png"].includes(file[0]?.type),
+      {
+        message: "Solo se permiten imágenes PNG o JPEG",
+      }
     ),
 });
 
@@ -30,16 +39,46 @@ export default function BookDetails() {
   const [book, setBook] = useState<Book | null>(null);
   const [editable, setEditable] = useState(false);
 
-  const performRequest = (data: FormData) => {
+  const performRequest = async (data: FormData) => {
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("author", data.author);
     formData.append("editorial", data.editorial);
     formData.append("genre", data.genre);
     if (data.image?.length) {
-      formData.append("image", data.file[0]);
+      formData.append("image", data.image[0]);
     }
-    console.log(`Formulario enviado: ${JSON.stringify(formData)}`);
+
+    try {
+      const res = await apiFetch<ApiResponse<Book>>(
+        `/books/${id}`,
+        {
+          method: "PUT",
+          body: formData,
+        },
+        false
+      );
+
+      if (res.code === "success") {
+        Notify.success("Libro creado");
+        const bookData = res.data;
+        setBook(bookData);
+        reset({
+          title: bookData.title,
+          author: bookData.author,
+          editorial: bookData.editorial,
+          genre: bookData.genre,
+          price: bookData.price,
+          availability: bookData.availability,
+          image: undefined,
+        });
+        setEditable(false);
+      } else {
+        Notify.failure("Error al Editar el libro");
+      }
+    } catch (error) {
+      Notify.failure(error.message || "Error desconocido al editar el libro");
+    }
   };
 
   const {
@@ -62,6 +101,8 @@ export default function BookDetails() {
             author: bookData.author,
             editorial: bookData.editorial,
             genre: bookData.genre,
+            price: bookData.price,
+            availability: bookData.availability,
             image: undefined,
           });
         }
@@ -76,7 +117,7 @@ export default function BookDetails() {
       <TitleBanner title={`Información de ${book.title}`} />
       <div className="flex gap-6 max-w-3xl mx-auto my-10">
         <img
-          src={book.image_url}
+          src={book.image_url ? book.image_url : "https://placehold.co/400"}
           alt={book.title}
           className="w-48 h-48 object-cover"
         />
@@ -88,9 +129,12 @@ export default function BookDetails() {
                 className="space-y-4"
               >
                 <div>
-                  <label htmlFor="title" className="block font-medium">Título</label>
+                  <label htmlFor="title" className="block font-medium">
+                    Título
+                  </label>
                   <input
                     type="text"
+                    id="title"
                     name="title"
                     {...register("title")}
                     className="block w-full border border-gray-300 rounded p-2 mt-1"
@@ -100,9 +144,12 @@ export default function BookDetails() {
                   )}
                 </div>
                 <div>
-                  <label htmlFor="author" className="block font-medium">Autor</label>
+                  <label htmlFor="author" className="block font-medium">
+                    Autor
+                  </label>
                   <input
                     type="text"
+                    id="author"
                     name="author"
                     {...register("author")}
                     className="block w-full border border-gray-300 rounded p-2 mt-1"
@@ -114,9 +161,12 @@ export default function BookDetails() {
                   )}
                 </div>
                 <div>
-                  <label htmlFor="editorial" className="block font-medium">Editorial</label>
+                  <label htmlFor="editorial" className="block font-medium">
+                    Editorial
+                  </label>
                   <input
                     type="text"
+                    id="editorial"
                     name="editorial"
                     {...register("editorial")}
                     className="block w-full border border-gray-300 rounded p-2 mt-1"
@@ -128,9 +178,12 @@ export default function BookDetails() {
                   )}
                 </div>
                 <div>
-                  <label htmlFor="genre" className="block font-medium">Género</label>
+                  <label htmlFor="genre" className="block font-medium">
+                    Género
+                  </label>
                   <input
                     type="text"
+                    id="genre"
                     name="genre"
                     {...register("genre")}
                     className="block w-full border border-gray-300 rounded p-2 mt-1"
@@ -140,10 +193,37 @@ export default function BookDetails() {
                   )}
                 </div>
                 <div>
-                  <label htmlFor="image" className="block font-medium">Imagen (opcional)</label>
+                  <label className="block font-medium">Precio</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    {...register("price")}
+                    className="block w-full p-2 border border-gray-300 rounded mt-1"
+                  />
+                  {errors.price && (
+                    <p className="text-red-600">{errors.price.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block font-medium">
+                    <input type="checkbox" {...register("availability")} />{" "}
+                    Disponible
+                  </label>
+                  {errors.availability && (
+                    <p className="text-red-600">
+                      {errors.availability.message}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label htmlFor="image" className="block font-medium">
+                    Imagen (opcional)
+                  </label>
                   <input
                     type="file"
                     name="image"
+                    id="image"
                     {...register("image")}
                     className="block w-full bg-blue-200/60 p-2 rounded mt-1"
                     accept="image/png, image/jpeg"
@@ -152,29 +232,34 @@ export default function BookDetails() {
                     <span className="text-red-600">{errors.file.message}</span>
                   )}
                 </div>
-                <input
+                <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                />
-                  
-                
+                  className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                >
+                  Guardar
+                </button>
               </form>
             </>
           ) : (
             <>
               <h2 className="text-2xl font-bold">Título: {book.title}</h2>
-              <p className="text-white/80">
-                <strong>Autor: </strong>
-                {book.author}
-              </p>
-              <p className="text-white/80">
-                <strong>Editorial: </strong>
-                {book.editorial}
-              </p>
-              <p className="text-white/80">
-                <strong>Género: </strong>
-                {book.genre}
-              </p>
+              <ul className="mt-4 space-y-2">
+                <li className="text-white/80">
+                  <strong className="text-xl">Autor: </strong>
+                  {book.author}
+                </li>
+                <li className="text-white/80">
+                  <strong className="text-xl">Editorial: </strong>
+                  {book.editorial}
+                </li>
+                <li className="text-white/80">
+                  <strong className="text-xl">Género: </strong>
+                  {book.genre}
+                </li>
+                <li className="text-white/80">
+                  <strong className="text-xl">Precio: </strong>${book.price}
+                </li>
+              </ul>
             </>
           )}
           <button
