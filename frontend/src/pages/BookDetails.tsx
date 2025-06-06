@@ -115,7 +115,10 @@ export default function BookDetails() {
   return (
     <>
       <TitleBanner title={`Información de ${book.title}`} />
-      <div className="flex gap-6 max-w-3xl mx-auto my-10">
+      <div className="flex justify-end mt-6 mb-2">
+        <BackButton />
+      </div>
+      <div className="flex gap-6 max-w-3xl mx-auto">
         <img
           src={book.image_url ? book.image_url : "https://placehold.co/400"}
           alt={book.title}
@@ -218,7 +221,7 @@ export default function BookDetails() {
                 </div>
                 <div>
                   <label htmlFor="image" className="block font-medium">
-                    Imagen (opcional)
+                    Imagen - PNG o JPG (opcional)
                   </label>
                   <input
                     type="file"
@@ -259,6 +262,12 @@ export default function BookDetails() {
                 <li className="text-white/80">
                   <strong className="text-xl">Precio: </strong>${book.price}
                 </li>
+                <li className="text-white/80">
+                  <strong className="text-xl">Stock: </strong>
+                  <span className={`ms-4 font-bold ${book.availability ? 'text-green-600' : 'text-red-600'}`}>
+                    {book.availability ? 'Disponible' : 'Agotado'}
+                  </span>
+                </li>
               </ul>
             </>
           )}
@@ -273,7 +282,6 @@ export default function BookDetails() {
           </button>
         </div>
       </div>
-      <BackButton />
     </>
   );
 }
