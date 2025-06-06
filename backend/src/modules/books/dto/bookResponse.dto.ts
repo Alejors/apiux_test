@@ -22,7 +22,15 @@ export class ResponseBookDTO {
 
   @IsBoolean()
   availability: boolean;
-  constructor(id: number, title: string, author: string, editorial: string, genre: string, price: number, availability: boolean) {
+  constructor(
+    id: number,
+    title: string,
+    author: string,
+    editorial: string,
+    genre: string,
+    price: number,
+    availability: boolean,
+  ) {
     this.id = id;
     this.title = title;
     this.author = author;
@@ -33,6 +41,14 @@ export class ResponseBookDTO {
   }
 
   static fromProjection(projection: DetailedBook): ResponseBookDTO {
-    return new ResponseBookDTO(projection.id, projection.title, projection.author, projection.editorial, projection.genre, projection.price, projection.availability);
+    return new ResponseBookDTO(
+      projection.id,
+      projection.title,
+      projection.author,
+      projection.editorial,
+      projection.genre,
+      projection.price,
+      projection.availability,
+    );
   }
 }

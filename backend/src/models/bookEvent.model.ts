@@ -1,4 +1,10 @@
-import { Column, Model, Table, DataType, ForeignKey } from "sequelize-typescript";
+import {
+  Column,
+  Model,
+  Table,
+  DataType,
+  ForeignKey,
+} from "sequelize-typescript";
 import { BookModel } from "./book.model";
 import { UserModel } from "./user.model";
 import { EventTypeEnum } from "src/common/enums/eventType.enum";

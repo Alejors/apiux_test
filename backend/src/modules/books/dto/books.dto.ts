@@ -1,4 +1,4 @@
-import { Transform } from 'class-transformer';
+import { Transform } from "class-transformer";
 import { PartialType } from "@nestjs/mapped-types";
 import { IsString, IsNumber, IsBoolean, Min } from "class-validator";
 
@@ -17,7 +17,7 @@ export class CreateBookDto {
   @Min(0)
   price: number;
 
-  @Transform(({ value }) => value.toLowerCase() === 'true' || value === true)
+  @Transform(({ value }) => value.toLowerCase() === "true" || value === true)
   @IsBoolean()
   availability: boolean;
 

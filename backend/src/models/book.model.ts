@@ -61,12 +61,15 @@ export class BookModel extends Model {
   })
   image_url: string;
 
-  @BelongsTo(() => AuthorModel, { as: 'author', foreignKey: 'author_id' })
+  @BelongsTo(() => AuthorModel, { as: "author", foreignKey: "author_id" })
   author: AuthorModel;
 
-  @BelongsTo(() => EditorialModel, { as: 'editorial', foreignKey: 'editorial_id' })
+  @BelongsTo(() => EditorialModel, {
+    as: "editorial",
+    foreignKey: "editorial_id",
+  })
   editorial: EditorialModel;
 
-  @BelongsTo(() => GenreModel, { as: 'genre', foreignKey: 'genre_id' })
+  @BelongsTo(() => GenreModel, { as: "genre", foreignKey: "genre_id" })
   genre: GenreModel;
 }

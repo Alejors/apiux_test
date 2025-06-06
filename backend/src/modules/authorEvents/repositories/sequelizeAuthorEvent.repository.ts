@@ -8,9 +8,10 @@ import { IAuthorEventsRepository } from "../authorEvent.interface";
 @Injectable()
 export class AuthorEventSequelizeRepository implements IAuthorEventsRepository {
   constructor(
-    @InjectModel(AuthorEventModel) private readonly authorEventModel: typeof AuthorEventModel,
+    @InjectModel(AuthorEventModel)
+    private readonly authorEventModel: typeof AuthorEventModel,
   ) {}
   async create(authorEvent: CreateAuthorEventDto): Promise<void> {
-    await this.authorEventModel.create({...authorEvent});
+    await this.authorEventModel.create({ ...authorEvent });
   }
 }

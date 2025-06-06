@@ -8,9 +8,10 @@ import { IGenreEventsRepository } from "../genreEvent.interface";
 @Injectable()
 export class GenreEventSequelizeRepository implements IGenreEventsRepository {
   constructor(
-    @InjectModel(GenreEventModel) private readonly genreEventModel: typeof GenreEventModel,
+    @InjectModel(GenreEventModel)
+    private readonly genreEventModel: typeof GenreEventModel,
   ) {}
   async create(genreEvent: CreateGenreEventDto): Promise<void> {
-    await this.genreEventModel.create({...genreEvent});
+    await this.genreEventModel.create({ ...genreEvent });
   }
 }

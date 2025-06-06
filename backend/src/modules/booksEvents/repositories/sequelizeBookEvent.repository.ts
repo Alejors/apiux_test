@@ -7,9 +7,10 @@ import { IBookEventsRepository } from "../bookEvent.interface";
 @Injectable()
 export class BookEventSequelizeRepository implements IBookEventsRepository {
   constructor(
-    @InjectModel(BookEventModel) private readonly bookEventModel: typeof BookEventModel,
+    @InjectModel(BookEventModel)
+    private readonly bookEventModel: typeof BookEventModel,
   ) {}
   async create(bookEvent: CreateBookEventDto): Promise<void> {
-    await this.bookEventModel.create({...bookEvent});
+    await this.bookEventModel.create({ ...bookEvent });
   }
 }

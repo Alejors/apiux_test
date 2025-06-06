@@ -15,7 +15,7 @@ export class AuthService {
   constructor(
     private usersService: UserService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   private async hashPassword(password: string): Promise<string> {
     return await bcrypt.hash(password, SALT);

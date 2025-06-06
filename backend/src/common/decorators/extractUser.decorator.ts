@@ -1,4 +1,8 @@
-import { createParamDecorator, ExecutionContext, BadRequestException } from '@nestjs/common';
+import {
+  createParamDecorator,
+  ExecutionContext,
+  BadRequestException,
+} from "@nestjs/common";
 
 export const ExtractUser = createParamDecorator(
   (data: unknown, context: ExecutionContext) => {
@@ -6,7 +10,7 @@ export const ExtractUser = createParamDecorator(
     const userId = request.user.id;
 
     if (!userId || isNaN(userId)) {
-      throw new BadRequestException('Missing User Info');
+      throw new BadRequestException("Missing User Info");
     }
 
     return userId;

@@ -9,7 +9,7 @@ import {
   UseGuards,
   HttpCode,
 } from "@nestjs/common";
-import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiOperation } from "@nestjs/swagger";
 
 import { User } from "./user.entity";
 import { UpdateUserDto } from "../auth/dto";
@@ -38,7 +38,10 @@ export class UserController {
   @ApiOperation({ summary: "Update User" })
   @ApiResponse({ status: 200, description: "User Updated" })
   @ApiResponse({ status: 401, description: "Not Logged In -Unauthorized-" })
-  async update(@Param("id", ParseIntPipe) id: number, @Body() user: UpdateUserDto): Promise<ResponseUserDTO> {
+  async update(
+    @Param("id", ParseIntPipe) id: number,
+    @Body() user: UpdateUserDto,
+  ): Promise<ResponseUserDTO> {
     return await this.userService.update(id, user);
   }
 
