@@ -48,9 +48,28 @@ export class BooksController {
   @Post()
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor("image"))
-  @ApiOperation({ summary: "Create a New Book" })
-  @ApiResponse({ status: 201, description: "Book Created" })
-  @ApiResponse({ status: 401, description: "Not Logged In -Unauthorized-" })
+  @ApiOperation({ summary: "Crear un Nuevo Libro" })
+  @ApiResponse({
+    status: 201,
+    description: "Libro Creado",
+    schema: {
+      example: {
+        message: "Mensaje de Creación Exitoso",
+        code: "Código de Éxito",
+        data: {
+          id: "ID del Libro",
+          title: "Título",
+          author: "Autor",
+          editorial: "Editorial",
+          genre: "Género",
+          price: "Precio",
+          availability: "Disponibilidad",
+          image_url: "URL de la imagen",
+        },
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: "No Autorizado" })
   @ApiConsumes("multipart/form-data")
   @ApiBody({
     schema: {
@@ -98,9 +117,30 @@ export class BooksController {
 
   @Get()
   @UseGuards(AuthGuard)
-  @ApiOperation({ summary: "Get All Books" })
-  @ApiResponse({ status: 200, description: "Books Collected" })
-  @ApiResponse({ status: 401, description: "Not Logged In -Unauthorized-" })
+  @ApiOperation({ summary: "Obtener Todos Los Libros Paginados" })
+  @ApiResponse({
+    status: 200,
+    description: "Libros Obtenidos",
+    schema: {
+      example: {
+        message: "Mensaje de Éxito",
+        code: "Código de Éxito",
+        data: [
+          {
+            id: "ID del Libro",
+            title: "Título",
+            author: "Autor",
+            editorial: "Editorial",
+            genre: "Género",
+            price: "Precio",
+            availability: "Disponibilidad",
+            image_url: "URL de la imagen",
+          },
+        ],
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: "No Autorizado" })
   async findAll(
     @Query("page")
     page: number = 1,
@@ -122,9 +162,9 @@ export class BooksController {
 
   @Get("/export")
   @UseGuards(AuthGuard)
-  @ApiOperation({ summary: "Get Books in CSV File" })
-  @ApiResponse({ status: 200, description: "CSV File Obtained" })
-  @ApiResponse({ status: 401, description: "Not Logged In -Unauthorized-" })
+  @ApiOperation({ summary: "Obtener Todos los Libros como CSV" })
+  @ApiResponse({ status: 200, description: "Archivo CSV Obtenido" })
+  @ApiResponse({ status: 401, description: "No Autorizado" })
   async exporCSV(@Res() res: Response): Promise<any> {
     const csv = await this.booksService.exportToCSV();
     res.header("Content-Type", "text/csv");
@@ -134,9 +174,28 @@ export class BooksController {
 
   @Get(":id")
   @UseGuards(AuthGuard)
-  @ApiOperation({ summary: "Get Single Book" })
-  @ApiResponse({ status: 200, description: "Book Collected" })
-  @ApiResponse({ status: 401, description: "Not Logged In -Unauthorized-" })
+  @ApiOperation({ summary: "Obtener un Único Libro" })
+  @ApiResponse({
+    status: 200,
+    description: "Libro Obtenido",
+    schema: {
+      example: {
+        message: "Obtención Exitosa",
+        code: "Código de Éxito",
+        data: {
+          id: "ID del Libro",
+          title: "Título",
+          author: "Autor",
+          editorial: "Editorial",
+          genre: "Género",
+          price: "Precio",
+          availability: "Disponibilidad",
+          image_url: "URL de la imagen",
+        },
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: "No Autorizado" })
   async findOne(
     @Param("id", ParseIntPipe) id: number,
   ): Promise<ApiResponseType<ResponseBookDTO | null>> {
@@ -158,9 +217,28 @@ export class BooksController {
   @Put(":id")
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor("image"))
-  @ApiOperation({ summary: "Edit Book" })
-  @ApiResponse({ status: 200, description: "Book Updated" })
-  @ApiResponse({ status: 401, description: "Not Logged In -Unauthorized-" })
+  @ApiOperation({ summary: "Editar un Libro" })
+  @ApiResponse({
+    status: 200,
+    description: "Libro Editado",
+    schema: {
+      example: {
+        message: "Edición Exitosa",
+        code: "Código de Éxito",
+        data: {
+          id: "ID del Libro",
+          title: "Título",
+          author: "Autor",
+          editorial: "Editorial",
+          genre: "Género",
+          price: "Precio",
+          availability: "Disponibilidad",
+          image_url: "URL de la imagen",
+        },
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: "No Autorizado" })
   @ApiConsumes("multipart/form-data")
   @ApiBody({
     schema: {
@@ -211,9 +289,9 @@ export class BooksController {
   @Delete(":id")
   @UseGuards(AuthGuard)
   @HttpCode(204)
-  @ApiOperation({ summary: "Delete Book" })
-  @ApiResponse({ status: 204, description: "Book Deleted" })
-  @ApiResponse({ status: 401, description: "Not Logged In -Unauthorized-" })
+  @ApiOperation({ summary: "Eliminar Libro" })
+  @ApiResponse({ status: 204, description: "Libro Eliminado" })
+  @ApiResponse({ status: 401, description: "No Autorizado" })
   async remove(
     @Param("id", ParseIntPipe)
     id: number,

@@ -19,9 +19,8 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle("APIUX Test Documentation")
-    .setDescription("API Example")
+    .setDescription("Documentación de la API para test Técnico APIUX")
     .setVersion("1.0")
-    .addTag("Default")
     .addCookieAuth("access_token")
     .build();
   const document = SwaggerModule.createDocument(app, config);

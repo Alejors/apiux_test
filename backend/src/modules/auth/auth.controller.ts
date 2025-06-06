@@ -24,9 +24,29 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post("register")
-  @ApiOperation({ summary: "Register to the Service" })
-  @ApiResponse({ status: 201, description: "Registration Successful" })
-  @ApiResponse({ status: 409, description: "Email is Already Registered" })
+  @ApiOperation({ summary: "Registrarse al Servicio" })
+  @ApiResponse({
+    status: 201,
+    description: "Registro Exitoso",
+    schema: {
+      example: {
+        message: "Mensaje de Éxito",
+        code: "Código de Éxito",
+        data: "Información del usuario",
+      },
+    },
+  })
+  @ApiResponse({
+    status: 409,
+    description: "Email Ya en Uso",
+    schema: {
+      example: {
+        message: "Mensaje de Error",
+        error: "Tipo de Error",
+        statusCode: "Código del Error",
+      },
+    },
+  })
   async register(
     @Body() createUserDto: CreateUserDto,
   ): Promise<ApiResponseType<ResponseUserDTO>> {
@@ -47,9 +67,15 @@ export class AuthController {
 
   @Post("login")
   @HttpCode(200)
-  @ApiOperation({ summary: "Log In to the Service" })
-  @ApiResponse({ status: 200, description: "User logged in Successfully" })
-  @ApiResponse({ status: 401, description: "Unauthorized" })
+  @ApiOperation({ summary: "Iniciar Sesión" })
+  @ApiResponse({
+    status: 200,
+    description: "Inicio de Sesión Exitoso",
+    schema: {
+      example: {},
+    },
+  })
+  @ApiResponse({ status: 401, description: "No Autorizado" })
   @UseInterceptors(CookieInterceptor)
   async login(
     @Body() loginUserDto: AuthCredentialsDto,
@@ -63,16 +89,16 @@ export class AuthController {
 
   @Get("check")
   @HttpCode(204)
-  @ApiOperation({ summary: "Check User Credentials" })
-  @ApiResponse({ status: 204, description: "User is Authenticated" })
-  @ApiResponse({ status: 401, description: "Unauthorized" })
+  @ApiOperation({ summary: "Revisar Credenciales" })
+  @ApiResponse({ status: 204, description: "Usuario Está Autenticado" })
+  @ApiResponse({ status: 401, description: "No Autorizado" })
   @UseGuards(AuthGuard)
   async checkCredentials(): Promise<void> {}
 
   @Post("logout")
   @HttpCode(204)
   @UseInterceptors(ClearCookieInterceptor)
-  @ApiOperation({ summary: "Log Out" })
-  @ApiResponse({ status: 204, description: "User logged out successfully" })
+  @ApiOperation({ summary: "Cerrar Sesión" })
+  @ApiResponse({ status: 204, description: "Usuario Cerró Sesión" })
   async logoutUser(): Promise<void> {}
 }
