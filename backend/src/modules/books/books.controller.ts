@@ -11,6 +11,7 @@ import {
   HttpCode,
   UploadedFile,
   UseInterceptors,
+  Query,
 } from '@nestjs/common';
 import type { Multer } from 'multer';
 import type { Request } from 'express';
@@ -30,6 +31,7 @@ import { ResponseBookDTO } from './dto/bookResponse.dto';
 import { FAILED_CODE, SUCCESS_CODE } from 'src/constants';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { ExtractUser } from 'src/common/decorators/extractUser.decorator';
+import { DetailedBook } from './detailedBook.projection';
 
 @Controller('books')
 @ApiTags('Books')
@@ -88,8 +90,13 @@ export class BooksController {
   @ApiOperation({ summary: "Get All Books" })
   @ApiResponse({ status: 200, description: "Books Collected" })
   @ApiResponse({ status: 401, description: "Not Logged In -Unauthorized-" })
-  findAll() {
-    return this.booksService.findAll();
+  async findAll(
+    @Query('page')
+    page: number = 1,
+    @Query('limit')
+    limit: number = 10,
+  ): Promise<ApiResponseType<DetailedBook[]>> {
+    return {message: "Books Obtained", code: SUCCESS_CODE, ...await this.booksService.findAll(page, limit)};
   }
 
   @Get(':id')
@@ -97,8 +104,18 @@ export class BooksController {
   @ApiOperation({ summary: "Get Single Book" })
   @ApiResponse({ status: 200, description: "Book Collected" })
   @ApiResponse({ status: 401, description: "Not Logged In -Unauthorized-" })
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.booksService.findOne(id);
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<ApiResponseType<DetailedBook|null>> {
+    let message;
+    let code;
+    const data = await this.booksService.findOne(id);
+    if (data) {
+      message = "Book Obtained";
+      code = SUCCESS_CODE;
+    } else {
+      message = "Book Not Found";
+      code = FAILED_CODE;
+    }
+    return { message, code, data };
   }
 
   @Put(':id')

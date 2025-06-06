@@ -116,8 +116,10 @@ export class BookSequelizeRepository implements IBookRepository {
     });
   }
 
-  async findAll(): Promise<DetailedBook[]> {
-    const books = await this.bookModel.findAll({
+  async findAll(limit: number, offset: number): Promise<[DetailedBook[], number]> {
+    const { rows, count } = await this.bookModel.findAndCountAll({
+      offset,
+      limit,
       attributes: [
         'id',
         'title',
@@ -144,7 +146,7 @@ export class BookSequelizeRepository implements IBookRepository {
       raw: true,
       nest: true,
     });
-    return books.map((book) => this.toProjection(book));
+    return [rows.map((book) => this.toProjection(book)), count];
   }
 
   async findOne(filters: object): Promise<DetailedBook | null> {

@@ -1,11 +1,12 @@
 import { Buffer } from 'buffer';
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 
 import { BOOKS_INTERFACE } from 'src/constants';
 import { IBookRepository } from './books.interface';
 import { DetailedBook } from './detailedBook.projection';
 import { CreateBookDto, UpdateBookDto } from './dto/books.dto';
 import { GcsService } from 'src/frameworks/cloud-storage/gcs.service';
+import { createPaginationLinks } from 'src/common/utils/paginationLinks.util';
 
 @Injectable()
 export class BooksService {
@@ -23,12 +24,28 @@ export class BooksService {
     return await this.booksRepository.findOne({ id: bookCreated.id });
   }
 
-  async findAll(): Promise<DetailedBook[]> {
-    return await this.booksRepository.findAll();
+  async findAll(page: number, limit: number): Promise<any> {
+    const offset = (page - 1) * limit;
+    const [books, count] = await this.booksRepository.findAll(limit, offset);
+    
+    const totalPages = Math.ceil(count / limit);
+    const baseUrl = '/books';
+
+    return {
+      data: books,
+      meta: {
+        totalCount: count,
+        totalPages,
+        currentPage: page,
+      },
+      links: createPaginationLinks(page, totalPages, limit, baseUrl),
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} book`;
+  async findOne(id: number): Promise<DetailedBook|null> {
+    const book = await this.booksRepository.findOne({ id });
+    if (!book)throw new NotFoundException("Book Doesn't Exist");
+    return book;
   }
 
   async update(id: number, updateBookDto: UpdateBookDto, userId: number, imageBuffer?: Buffer) {
