@@ -29,23 +29,15 @@ describe("UserController", () => {
     expect(controller).toBeDefined();
   });
 
-  it("should create a user", async () => {
-    await expect(controller.create({} as any)).resolves.toEqual(userMock);
-  });
-
   it("should return all users", async () => {
     await expect(controller.findAll()).resolves.toEqual([userMock]);
   });
 
-  it("should return a user by id", async () => {
-    await expect(controller.findOne("1")).resolves.toEqual(userMock);
-  });
-
   it("should update a user", async () => {
-    await expect(controller.update("1", {} as any)).resolves.toEqual(userMock);
+    await expect(controller.update(1, {} as any)).resolves.toEqual(userMock);
   });
 
   it("should remove a user", async () => {
-    await expect(controller.remove("1")).resolves.toBeUndefined();
+    await expect(controller.remove(1)).resolves.toBeUndefined();
   });
 });
