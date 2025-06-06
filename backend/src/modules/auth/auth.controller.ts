@@ -1,10 +1,12 @@
 import {
   Controller,
+  Get,
   Post,
   Body,
   UseInterceptors,
   UnauthorizedException,
   HttpCode,
+  UseGuards,
 } from "@nestjs/common";
 import { ApiTags, ApiResponse, ApiOperation } from "@nestjs/swagger";
 import { AuthService } from "./auth.service";
@@ -13,6 +15,7 @@ import { CookieInterceptor } from "./interceptors/cookie.interceptor";
 import { ResponseUserDTO } from "../users/dto/response-user.dto";
 import { ApiResponseType } from "src/common/dto/responses.dto";
 import { ClearCookieInterceptor } from "./interceptors/clearCookie.interceptor";
+import { AuthGuard } from "src/common/guards/auth.guard";
 
 const FAILED_ACCESS = "email and/or password incorrect.";
 @Controller("auth")
@@ -57,6 +60,14 @@ export class AuthController {
     }
     return { token };
   }
+
+  @Get("check")
+  @HttpCode(204)
+  @ApiOperation({ summary: "Check User Credentials" })
+  @ApiResponse({ status: 204, description: "User is Authenticated" })
+  @ApiResponse({ status: 401, description: "Unauthorized" })
+  @UseGuards(AuthGuard)
+  async checkCredentials(): Promise<void> {}
 
   @Post("logout")
   @HttpCode(204)
