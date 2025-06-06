@@ -16,4 +16,5 @@ export async function signup(name: string, email: string, password: string) {
 
 export async function logout() {
   await apiFetch('/auth/logout', { method: 'POST' });
+  window.location.href = '/login';
 }
