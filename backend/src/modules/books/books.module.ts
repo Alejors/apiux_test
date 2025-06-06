@@ -7,6 +7,7 @@ import { AuthorModel, BookModel, EditorialModel, GenreModel } from 'src/models';
 import { BOOKS_INTERFACE } from 'src/constants';
 import { AuthModule } from '../auth/auth.module';
 import { GcsService } from 'src/frameworks/cloud-storage/gcs.service';
+import { CsvExportService } from 'src/common/services/csv-export.service';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { GcsService } from 'src/frameworks/cloud-storage/gcs.service';
     },
     BooksService,
     GcsService,
+    CsvExportService,
   ],
   exports: [SequelizeModule, GcsService]
 })
