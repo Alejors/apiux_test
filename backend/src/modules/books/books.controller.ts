@@ -35,6 +35,11 @@ import { AuthGuard } from "src/common/guards/auth.guard";
 import { ExtractUser } from "src/common/decorators/extractUser.decorator";
 import { DetailedBook } from "./detailedBook.projection";
 
+interface PaginatedResponseType<T> extends ApiResponseType<T> {
+  meta: object;
+  links: object;
+}
+
 @Controller("books")
 @ApiTags("Books")
 export class BooksController {
@@ -71,9 +76,9 @@ export class BooksController {
     userId: number,
     @UploadedFile() file?: Express.Multer.File,
   ): Promise<ApiResponseType<ResponseBookDTO>> {
-    let message;
-    let code;
-    let data;
+    let message: string;
+    let code: string;
+    let data: ResponseBookDTO | null = null;
     const imageBuffer = file?.buffer;
     const response = await this.booksService.create(
       createBookDto,
@@ -101,11 +106,17 @@ export class BooksController {
     page: number = 1,
     @Query("limit")
     limit: number = 10,
-  ): Promise<ApiResponseType<DetailedBook[]>> {
+  ): Promise<PaginatedResponseType<ResponseBookDTO[]>> {
+    const { meta, links, data } = await this.booksService.findAllPaginated(
+      page,
+      limit,
+    );
     return {
       message: "Books Obtained",
       code: SUCCESS_CODE,
-      ...(await this.booksService.findAllPaginated(page, limit)),
+      data: data.map((book) => ResponseBookDTO.fromProjection(book)),
+      meta,
+      links,
     };
   }
 
@@ -117,7 +128,7 @@ export class BooksController {
   async exporCSV(@Res() res: Response): Promise<any> {
     const csv = await this.booksService.exportToCSV();
     res.header("Content-Type", "text/csv");
-    res.attachment(`csvExport-${new Date()}.csv`);
+    res.attachment(`csvExport-${new Date().getTime()}.csv`);
     return res.send(csv);
   }
 
@@ -128,13 +139,15 @@ export class BooksController {
   @ApiResponse({ status: 401, description: "Not Logged In -Unauthorized-" })
   async findOne(
     @Param("id", ParseIntPipe) id: number,
-  ): Promise<ApiResponseType<DetailedBook | null>> {
-    let message;
-    let code;
-    const data = await this.booksService.findOne(id);
-    if (data) {
+  ): Promise<ApiResponseType<ResponseBookDTO | null>> {
+    let message: string;
+    let code: string;
+    let data: ResponseBookDTO | null = null;
+    const response = await this.booksService.findOne(id);
+    if (response) {
       message = "Book Obtained";
       code = SUCCESS_CODE;
+      data = ResponseBookDTO.fromProjection(response);
     } else {
       message = "Book Not Found";
       code = FAILED_CODE;
@@ -174,9 +187,9 @@ export class BooksController {
     userId: number,
     @UploadedFile() file?: Express.Multer.File,
   ): Promise<ApiResponseType<ResponseBookDTO>> {
-    let message;
-    let code;
-    let data;
+    let message: string;
+    let code: string;
+    let data: ResponseBookDTO | null = null;
     const imageBuffer = file?.buffer;
     const response = await this.booksService.update(
       id,

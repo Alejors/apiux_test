@@ -22,6 +22,9 @@ export class ResponseBookDTO {
 
   @IsBoolean()
   availability: boolean;
+
+  @IsString()
+  image_url?: string;
   constructor(
     id: number,
     title: string,
@@ -30,6 +33,7 @@ export class ResponseBookDTO {
     genre: string,
     price: number,
     availability: boolean,
+    image_url?: string,
   ) {
     this.id = id;
     this.title = title;
@@ -38,6 +42,7 @@ export class ResponseBookDTO {
     this.genre = genre;
     this.price = price;
     this.availability = availability;
+    this.image_url = image_url;
   }
 
   static fromProjection(projection: DetailedBook): ResponseBookDTO {
@@ -49,6 +54,7 @@ export class ResponseBookDTO {
       projection.genre,
       projection.price,
       projection.availability,
+      projection.image_url,
     );
   }
 }
