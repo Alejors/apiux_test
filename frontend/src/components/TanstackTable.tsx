@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import type { Book } from '../types';
+import ExportCsvButton from './ExportCsvButton';
 
 const columnHelper = createColumnHelper<Book>();
 
@@ -81,12 +82,15 @@ export default function BooksTable({ data }: { data: Book[] }) {
 
   return (
     <div className="p-4">
-      <input
-        className="mb-4 border bg-white/20 p-2 rounded w-full md:w-1/3"
-        placeholder="Buscar..."
-        value={globalFilter}
-        onChange={e => setGlobalFilter(e.target.value)}
-      />
+      <div className="flex justify-between items-center mb-4">
+        <input
+          className="border bg-white/20 p-2 rounded w-full md:w-1/3"
+          placeholder="Buscar..."
+          value={globalFilter}
+          onChange={e => setGlobalFilter(e.target.value)}
+        />
+        <ExportCsvButton />
+      </div>
       <div className="overflow-x-auto">
         <table className="w-full table-auto border-collapse">
           <thead>
