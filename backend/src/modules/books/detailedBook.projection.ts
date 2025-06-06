@@ -6,6 +6,7 @@ export class DetailedBook {
         public readonly availability: boolean,
         public readonly author: string,
         public readonly genre: string,
-        public readonly editorial: string
+        public readonly editorial: string,
+        public readonly image_url: string,
     ){}
 }

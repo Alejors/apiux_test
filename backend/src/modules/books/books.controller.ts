@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Res,
   Post,
   Body,
   Put,
@@ -13,6 +14,7 @@ import {
   UseInterceptors,
   Query,
 } from '@nestjs/common';
+import { Response } from 'express';
 import type { Multer } from 'multer';
 import type { Request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -96,7 +98,19 @@ export class BooksController {
     @Query('limit')
     limit: number = 10,
   ): Promise<ApiResponseType<DetailedBook[]>> {
-    return {message: "Books Obtained", code: SUCCESS_CODE, ...await this.booksService.findAll(page, limit)};
+    return {message: "Books Obtained", code: SUCCESS_CODE, ...await this.booksService.findAllPaginated(page, limit)};
+  }
+
+  @Get('/export')
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: "Get Books in CSV File" })
+  @ApiResponse({ status: 200, description: "CSV File Obtained" })
+  @ApiResponse({ status: 401, description: "Not Logged In -Unauthorized-" })
+  async exporCSV(@Res() res: Response): Promise<any> {
+    const csv = await this.booksService.exportToCSV();
+    res.header('Content-Type', 'text/csv');
+    res.attachment(`csvExport-${new Date()}.csv`);
+    return res.send(csv);
   }
 
   @Get(':id')

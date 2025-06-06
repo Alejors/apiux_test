@@ -6,6 +6,7 @@ import { IBookRepository } from './books.interface';
 import { DetailedBook } from './detailedBook.projection';
 import { CreateBookDto, UpdateBookDto } from './dto/books.dto';
 import { GcsService } from 'src/frameworks/cloud-storage/gcs.service';
+import { CsvExportService } from 'src/common/services/csv-export.service';
 import { createPaginationLinks } from 'src/common/utils/paginationLinks.util';
 
 @Injectable()
@@ -13,6 +14,7 @@ export class BooksService {
   constructor(
     @Inject(BOOKS_INTERFACE) private readonly booksRepository: IBookRepository,
     private readonly gcsService: GcsService,
+    private readonly csvExportService: CsvExportService,
   ){}
   async create(createBookDto: CreateBookDto, userId: number, imageBuffer?: Buffer): Promise<DetailedBook | null> {
     let imageUrl: string | undefined;
@@ -24,9 +26,19 @@ export class BooksService {
     return await this.booksRepository.findOne({ id: bookCreated.id });
   }
 
-  async findAll(page: number, limit: number): Promise<any> {
+  private async findAll(): Promise<DetailedBook[]> {
+    return await this.booksRepository.findAll();
+  }
+
+  async exportToCSV(): Promise<string> {
+    const books = await this.findAll();
+    const headers = Object.keys(books[0]).map(key => ({ id: key, title: key.toUpperCase() }))
+    return this.csvExportService.exportToCsv(books, headers);
+  }
+
+  async findAllPaginated(page: number, limit: number): Promise<{data: DetailedBook[], meta: object, links: object }> {
     const offset = (page - 1) * limit;
-    const [books, count] = await this.booksRepository.findAll(limit, offset);
+    const [books, count] = await this.booksRepository.findAllPaginated(limit, offset);
     
     const totalPages = Math.ceil(count / limit);
     const baseUrl = '/books';
