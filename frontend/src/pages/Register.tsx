@@ -2,39 +2,40 @@ import { z } from 'zod';
 import Notiflix from 'notiflix';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { login } from '../services/authService';
+import { signup } from '../services/authService';
 import { useAuth } from '../context/AuthContext';
 
 const schema = z.object({
+  name: z.string().min(1, { message: 'El nombre es obligatorio' }),
   email: z.string().email({ message: 'Email inválido' }),
-  password: z.string(),
+  password: z.string().min(6, { message: 'La contraseña debe tener al menos 6 caracteres' }),
 });
 
-type LoginFormData = z.infer<typeof schema>;
+type RegisterFormData = z.infer<typeof schema>;
 
-
-export default function Login() {
+export default function Register() {
   const { setIsAuthenticated, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>({
+  } = useForm<RegisterFormData>({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = async (data: RegisterFormData) => {
     try {
-      await login(data.email, data.password);
-      Notiflix.Notify.success('Login Exitoso!');
-      setIsAuthenticated(true);
-      navigate('/');
+      const response = await signup(data.name, data.email, data.password);
+      console.log(response);
+      Notiflix.Notify.success('Registrado Exitosamente!');
+      navigate('/login');
     } catch (error) {
       Notiflix.Notify.failure(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setIsAuthenticated(false);
     }
   };
 
@@ -47,32 +48,35 @@ export default function Login() {
   return (
     <div className="min-h-screen flex justify-center items-center">
       <div className="w-full max-w-md p-6 bg-black/20 border rounded shadow">
-        <h2 className="text-2xl font-bold mb-4 text-center">Inicia Sesión</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center">Crea tu Cuenta</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
+          <div>
+            <input
+              {...register('name')}
+              className="border p-2 bg-white/10 rounded w-full"
+              placeholder="Nombre"
+            />
+            {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+          </div>
           <div>
             <input
               {...register('email')}
               className="border p-2 bg-white/10 rounded w-full"
-              placeholder="tucorreo@email.com..."
+              placeholder="Email"
             />
             {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
           </div>
-
           <div>
             <input
               type="password"
               {...register('password')}
               className="border p-2 bg-white/10 rounded w-full"
-              placeholder="Contraseña..."
+              placeholder="Password"
             />
             {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
           </div>
-
-          <button className="bg-blue-500 text-white py-2 rounded hover:bg-blue-600">Inica Sesión</button>
+          <button className="bg-blue-500 text-white py-2 rounded hover:bg-blue-600">Registrarse</button>
         </form>
-        <p className="text-center text-sm mt-4">
-          ¿No tienes cuenta? <Link to="/register" className="text-blue-500 hover:underline">Regístrate aquí</Link>
-        </p>
       </div>
     </div>
   );

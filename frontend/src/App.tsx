@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
-// import Register from './routes/Register';
+import Register from './pages/Register';
 import Home from './pages/Home';
 import CreateBook from './pages/CreateBook';
 import BookDetails from './pages/BookDetails';
@@ -14,7 +14,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
-            {/* <Route path="/register" element={<Register />} /> */}
+            <Route path="/register" element={<Register />} />
             <Route path="/create" element={<CreateBook />} />
             <Route path="/book/:id" element={<BookDetails />} />
           </Routes>
