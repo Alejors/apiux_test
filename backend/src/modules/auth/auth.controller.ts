@@ -30,9 +30,9 @@ export class AuthController {
   async register(
     @Body() createUserDto: CreateUserDto,
   ): Promise<ApiResponseType<ResponseUserDTO>> {
-    let message;
-    let code;
-    let data;
+    let message: string;
+    let code: string;
+    let data: ResponseUserDTO | null = null;
     const response = await this.authService.register(createUserDto);
     if (response) {
       data = ResponseUserDTO.fromUser(response);
