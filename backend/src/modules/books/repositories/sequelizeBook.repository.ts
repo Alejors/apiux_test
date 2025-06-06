@@ -27,6 +27,14 @@ import { CreateAuthorEventDto } from "src/modules/authorEvents/dto/authorEvent.d
 import { CreateEditorialEventDto } from "src/modules/editorialEvents/dto/editorialEvent.dto";
 import { CreateGenreEventDto } from "src/modules/genreEvents/dto/genreEvent.dto";
 
+
+const DETAILED_BOOK_ATTRIBUTES = [
+  'id',
+  'title',
+  'price',
+  'availability',
+  'image_url',
+];
 @Injectable()
 export class BookSequelizeRepository implements IBookRepository {
   constructor(
@@ -59,6 +67,7 @@ export class BookSequelizeRepository implements IBookRepository {
       projection.author.name,
       projection.genre.name,
       projection.editorial.name,
+      projection.image_url,
     );
   }
 
@@ -116,16 +125,38 @@ export class BookSequelizeRepository implements IBookRepository {
     });
   }
 
-  async findAll(limit: number, offset: number): Promise<[DetailedBook[], number]> {
+  async findAll(): Promise<DetailedBook[]> {
+    const books = await this.bookModel.findAll({
+      attributes: DETAILED_BOOK_ATTRIBUTES,
+      include: [
+        {
+          model: this.authorModel,
+          attributes: ['name'],
+          as: 'author',
+        },
+        {
+          model: this.editorialModel,
+          attributes: ['name'],
+          as: 'editorial',
+        },
+        {
+          model: this.genreModel,
+          attributes: ['name'],
+          as: 'genre',
+        },
+      ],
+      raw: true,
+      nest: true,
+    });
+
+    return books.map((book) => this.toProjection(book));
+  }
+
+  async findAllPaginated(limit?: number, offset?: number): Promise<[DetailedBook[], number]> {
     const { rows, count } = await this.bookModel.findAndCountAll({
       offset,
       limit,
-      attributes: [
-        'id',
-        'title',
-        'price',
-        'availability',
-      ],
+      attributes: DETAILED_BOOK_ATTRIBUTES,
       include: [
         {
           model: this.authorModel,
@@ -152,12 +183,7 @@ export class BookSequelizeRepository implements IBookRepository {
   async findOne(filters: object): Promise<DetailedBook | null> {
     const processedFilters = buildSequelizeFilters(filters);
     const book = await this.bookModel.findOne({
-      attributes: [
-        'id',
-        'title',
-        'price',
-        'availability',
-      ],
+      attributes: DETAILED_BOOK_ATTRIBUTES,
       include: [
         {
           model: this.authorModel,
