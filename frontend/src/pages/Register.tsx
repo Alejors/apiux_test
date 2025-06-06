@@ -77,6 +77,7 @@ export default function Register() {
           </div>
           <button className="bg-blue-500 text-white py-2 rounded hover:bg-blue-600">Registrarse</button>
         </form>
+        <BackButton location="login" />
       </div>
     </div>
   );
