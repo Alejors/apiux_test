@@ -16,7 +16,7 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - cmpc_test
+      - apiux_test
 
   cloud-storage:
     image: fsouza/fake-gcs-server
@@ -25,7 +25,7 @@ services:
     ports:
       - ${DOCKER_STORAGE_PORT}:4443
     networks:
-      - cmpc_test
+      - apiux_test
 
   api:
     build: ./backend
@@ -40,13 +40,30 @@ services:
       - ./backend/package.json:/app/package.json
       - ./backend/package-lock.json:/app/package-lock.json
     networks:
-      - cmpc_test
+      - apiux_test
     depends_on:
       db:
         condition: service_healthy
       cloud-storage:
         condition: service_started
 
+  front:
+    build: ./frontend
+    container_name: ${DOCKER_CONTAINER_FRONT_NAME}
+    env_file:
+      - .env
+    ports:
+      - "${DOCKER_FRONT_PORT}:5173"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/package.json:/app/package.json
+      - ./frontend/package-lock.json:/app/package-lock.json
+    networks:
+      - apiux_test
+    depends_on:
+      api:
+        condition: service_started
+
 networks:
-  cmpc_test:
+  apiux_test:
     name: ${DOCKER_NETWORK}
