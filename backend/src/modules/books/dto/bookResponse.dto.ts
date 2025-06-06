@@ -1,5 +1,6 @@
 import { IsString, IsBoolean, IsNumber } from "class-validator";
 import { DetailedBook } from "../detailedBook.projection";
+import { capitalizeWords } from "src/common/utils/capitalization.util";
 
 export class ResponseBookDTO {
   @IsNumber()
@@ -47,11 +48,11 @@ export class ResponseBookDTO {
 
   static fromProjection(projection: DetailedBook): ResponseBookDTO {
     return new ResponseBookDTO(
-      projection.id,
-      projection.title,
-      projection.author,
-      projection.editorial,
-      projection.genre,
+      projection.id ?? 0,
+      capitalizeWords(projection.title),
+      capitalizeWords(projection.author),
+      capitalizeWords(projection.editorial),
+      capitalizeWords(projection.genre),
       projection.price,
       projection.availability,
       projection.image_url,

@@ -1,3 +1,4 @@
+import { Transaction } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { Injectable, NotFoundException } from "@nestjs/common";
@@ -34,6 +35,12 @@ const DETAILED_BOOK_ATTRIBUTES = [
   "availability",
   "image_url",
 ];
+
+interface UpdateData extends UpdateBookDto {
+  genre_id?: number;
+  author_id?: number;
+  editorial_id?: number;
+}
 @Injectable()
 export class BookSequelizeRepository implements IBookRepository {
   constructor(
@@ -58,34 +65,39 @@ export class BookSequelizeRepository implements IBookRepository {
     );
   }
 
-  private toProjection(projection: any): DetailedBook {
+  private toProjection(projection: {
+    title: string;
+    price: number;
+    availability: boolean;
+    author: { name: string };
+    genre: { name: string };
+    editorial: { name: string };
+    image_url?: string;
+    id?: number;
+  }): DetailedBook {
     return new DetailedBook(
-      projection.id,
       projection.title,
       projection.price,
       projection.availability,
       projection.author.name,
       projection.genre.name,
       projection.editorial.name,
+      projection.id,
       projection.image_url,
     );
   }
 
   private async findOrCreateAuthor(
     name: string,
-    transaction,
+    transaction: Transaction,
     userId: number,
   ): Promise<AuthorModel> {
-    const authorName = name.toLowerCase();
     let author = await this.authorModel.findOne({
-      where: { name: authorName },
+      where: { name },
       transaction,
     });
     if (!author) {
-      author = await this.authorModel.create(
-        { name: authorName },
-        { transaction },
-      );
+      author = await this.authorModel.create({ name }, { transaction });
       const authorEvent = new CreateAuthorEventDto(
         author.id,
         userId,
@@ -99,19 +111,15 @@ export class BookSequelizeRepository implements IBookRepository {
 
   private async findOrCreateEditorial(
     name: string,
-    transaction: any,
+    transaction: Transaction,
     userId: number,
   ): Promise<EditorialModel> {
-    const editorialName = name.toLowerCase();
     let editorial = await this.editorialModel.findOne({
-      where: { name: editorialName },
+      where: { name },
       transaction,
     });
     if (!editorial) {
-      editorial = await this.editorialModel.create(
-        { name: editorialName },
-        { transaction },
-      );
+      editorial = await this.editorialModel.create({ name }, { transaction });
       const editorialEvent = new CreateEditorialEventDto(
         editorial.id,
         userId,
@@ -125,19 +133,15 @@ export class BookSequelizeRepository implements IBookRepository {
 
   private async findOrCreateGenre(
     name: string,
-    transaction: any,
+    transaction: Transaction,
     userId: number,
   ): Promise<GenreModel> {
-    const genreName = name.toLowerCase();
     let genre = await this.genreModel.findOne({
-      where: { name: genreName },
+      where: { name },
       transaction,
     });
     if (!genre) {
-      genre = await this.genreModel.create(
-        { name: genreName },
-        { transaction },
-      );
+      genre = await this.genreModel.create({ name }, { transaction });
       const genreEvent = new CreateGenreEventDto(
         genre.id,
         userId,
@@ -270,14 +274,14 @@ export class BookSequelizeRepository implements IBookRepository {
     if (!bookExists) throw new NotFoundException("Book Not Found");
 
     return await this.sequelize.transaction(async (t) => {
-      const updateData = { ...data };
+      const updateData: UpdateData = { ...data };
       if (data.genre !== undefined) {
         const genre = await this.findOrCreateGenre(data.genre, t, userId);
-        updateData["genre_id"] = genre.id;
+        updateData.genre_id = genre.id as number;
       }
       if (data.author !== undefined) {
         const author = await this.findOrCreateAuthor(data.author, t, userId);
-        updateData["author_id"] = author.id;
+        updateData.author_id = author.id as number;
       }
       if (data.editorial !== undefined) {
         const editorial = await this.findOrCreateEditorial(
@@ -285,7 +289,7 @@ export class BookSequelizeRepository implements IBookRepository {
           t,
           userId,
         );
-        updateData["editorial_id"] = editorial.id;
+        updateData.editorial_id = editorial.id as number;
       }
 
       await this.bookModel.update(updateData, {
