@@ -48,7 +48,7 @@ module.exports = {
     const [authorsRows] = await queryInterface.sequelize.query('SELECT id FROM authors');
 
     const books = Array.from({ length: 30 }).map((_, i) => ({
-      title: `Libro de Prueba ${i + 1}`,
+      title: `libro de prueba ${i + 1}`,
       author_id: authorsRows[Math.floor(Math.random() * authorsRows.length)].id,
       editorial_id: editorialsRows[Math.floor(Math.random() * editorialsRows.length)].id,
       genre_id: genresRows[Math.floor(Math.random() * genresRows.length)].id,
