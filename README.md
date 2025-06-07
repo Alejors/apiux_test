@@ -187,7 +187,6 @@ apiux_test/
 │   │   ├── modules/
 │   │   │   ├── books/               # CRUD + carga de imagen + proyecciones
 │   │   │   ├── auth/               # Login, registro, cookies
-│   │   │   ├── users/              # Gestión de usuarios
 │   │   │   ├── export/             # Exportación CSV
 │   │   │   ├── *EventModules/      # Manejo de eventos por entidad (authorEvents, booksEvents, etc.)
 │   │   ├── models/                 # Sequelize models (book, user, genre, etc.)

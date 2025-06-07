@@ -1,19 +1,23 @@
 import {
+  Inject,
   Injectable,
   NotFoundException,
   ConflictException,
 } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
-import { UserService } from "../users/user.service";
+import { JwtService } from "@nestjs/jwt";
+
+import { User } from "./user.entity";
+import { USERS_INTERFACE } from "src/constants";
+import { IUserRepository } from "./user.interface";
 import { CreateUserDto, AuthCredentialsDto } from "./dto";
-import { User } from "../users/user.entity";
 
 const SALT = 10;
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UserService,
+    @Inject(USERS_INTERFACE)
+    private readonly userRepository: IUserRepository,
     private jwtService: JwtService,
   ) {}
 
@@ -42,7 +46,7 @@ export class AuthService {
       authCredentialsDto.password = await this.hashPassword(
         authCredentialsDto.password,
       );
-      return await this.usersService.create(authCredentialsDto);
+      return await this.userRepository.create(authCredentialsDto);
     } catch (error) {
       if (
         error.name === "SequelizeUniqueConstraintError" ||
@@ -55,24 +59,25 @@ export class AuthService {
   }
 
   async login(authCredentialsDto: AuthCredentialsDto): Promise<string | null> {
-    let user;
+    let user: User | null = null;
     const email = authCredentialsDto.email;
     const password = authCredentialsDto.password;
     try {
-      user = await this.usersService.findOne({ email });
+      user = await this.userRepository.findOne({ email });
+      if (!user) return null;
     } catch (error) {
       if (error instanceof NotFoundException) {
-        console.log("User Not Found on Log in Attempt");
         return null;
       }
     }
-    const hashedPassword = user.password;
+
+    const hashedPassword = user?.password as string;
     const passwordMatch = await this.comparePassword(password, hashedPassword);
     if (!passwordMatch) {
-      console.log("Wrong Password");
       return null;
     }
-    const payload = { id: user.id, email: user.email };
+
+    const payload = { id: user?.id, email: user?.email };
     return this.jwtService.sign(payload);
   }
 }

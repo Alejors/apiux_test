@@ -16,7 +16,6 @@ import {
 } from "./models";
 import jwtConfig from "./config/jwt.config";
 import { AuthModule } from "./modules/auth/auth.module";
-import { UserModule } from "./modules/users/user.module";
 import { BooksModule } from "./modules/books/books.module";
 import { BooksEventsModule } from "./modules/booksEvents/bookEvent.module";
 import { AuthorEventsModule } from "./modules/authorEvents/authorEvent.module";
@@ -51,7 +50,6 @@ import { UploadModule } from "./modules/upload/upload.module";
     }),
     EventEmitterModule.forRoot(),
     AuthModule,
-    UserModule,
     BooksModule,
     BooksEventsModule,
     AuthorEventsModule,

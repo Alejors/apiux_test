@@ -1,4 +1,4 @@
-import { User } from "../user.entity";
+import { User } from "../../auth/user.entity";
 import { IsString, IsEmail, IsNumber } from "class-validator";
 
 export class ResponseUserDTO {

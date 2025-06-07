@@ -12,7 +12,7 @@ import { ApiTags, ApiResponse, ApiOperation } from "@nestjs/swagger";
 import { AuthService } from "./auth.service";
 import { CreateUserDto, AuthCredentialsDto } from "./dto";
 import { CookieInterceptor } from "./interceptors/cookie.interceptor";
-import { ResponseUserDTO } from "../users/dto/response-user.dto";
+import { ResponseUserDTO } from "./dto";
 import { ApiResponseType } from "src/common/dto/responses.dto";
 import { ClearCookieInterceptor } from "./interceptors/clearCookie.interceptor";
 import { AuthGuard } from "src/common/guards/auth.guard";
