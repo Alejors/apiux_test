@@ -191,7 +191,6 @@ export class BooksController {
     let message: string;
     let code: string;
     let data: ResponseBookDTO[] | null = null;
-    console.log(`THE QUERY: ${JSON.stringify(query)}`);
     const books = await this.booksService.findAdvanced(query);
     if (books.length > 0) {
       data = books.map((book) => ResponseBookDTO.fromProjection(book));

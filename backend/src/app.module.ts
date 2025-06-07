@@ -22,8 +22,8 @@ import { BooksEventsModule } from "./modules/booksEvents/bookEvent.module";
 import { AuthorEventsModule } from "./modules/authorEvents/authorEvent.module";
 import { EditorialEventsModule } from "./modules/editorialEvents/editorialEvent.module";
 import { GenreEventsModule } from "./modules/genreEvents/genreEvent.module";
+import { UploadModule } from "./modules/upload/upload.module";
 
-// TODO: agregar export modules
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -57,6 +57,7 @@ import { GenreEventsModule } from "./modules/genreEvents/genreEvent.module";
     AuthorEventsModule,
     EditorialEventsModule,
     GenreEventsModule,
+    UploadModule,
   ],
 })
 export class AppModule {}

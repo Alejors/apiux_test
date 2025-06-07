@@ -5,7 +5,7 @@ import { BOOKS_INTERFACE } from "src/constants";
 import { IBookRepository } from "./books.interface";
 import { DetailedBook } from "./detailedBook.projection";
 import { CreateBookDto, UpdateBookDto } from "./dto/books.dto";
-import { GcsService } from "src/frameworks/cloud-storage/gcs.service";
+import { UploadService } from "../upload/upload.service";
 import { CsvExportService } from "src/common/services/csv-export.service";
 import { createPaginationLinks } from "src/common/utils/paginationLinks.util";
 
@@ -13,7 +13,7 @@ import { createPaginationLinks } from "src/common/utils/paginationLinks.util";
 export class BooksService {
   constructor(
     @Inject(BOOKS_INTERFACE) private readonly booksRepository: IBookRepository,
-    private readonly gcsService: GcsService,
+    private readonly uploadService: UploadService,
     private readonly csvExportService: CsvExportService,
   ) {}
   async create(
@@ -23,10 +23,7 @@ export class BooksService {
   ): Promise<DetailedBook | null> {
     let imageUrl: string | undefined;
     if (imageBuffer) {
-      imageUrl = await this.gcsService.upload(
-        `book-${Date.now()}.jpg`,
-        imageBuffer,
-      );
+      imageUrl = await this.uploadService.upload(imageBuffer);
       createBookDto.image_url = imageUrl;
     }
     const bookCreated = await this.booksRepository.create(
@@ -41,7 +38,6 @@ export class BooksService {
   }
 
   async findAdvanced(filters: Record<string, string>): Promise<DetailedBook[]> {
-    console.log(`RECEIVED FILTERS: ${JSON.stringify(filters)}`);
     return await this.booksRepository.advancedFilters(filters);
   }
 
@@ -92,10 +88,7 @@ export class BooksService {
   ) {
     let imageUrl: string | undefined;
     if (imageBuffer) {
-      imageUrl = await this.gcsService.upload(
-        `book-${Date.now()}.jpg`,
-        imageBuffer,
-      );
+      imageUrl = await this.uploadService.upload(imageBuffer);
       updateBookDto.image_url = imageUrl;
     }
     const bookUpdated = await this.booksRepository.update(

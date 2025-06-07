@@ -1,9 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { GCS_STORAGE } from "./gcs.provider";
 import { Buffer } from "buffer";
+import { Upload } from "../../modules/upload/upload.interface";
 
 @Injectable()
-export class GcsService {
+export class GcsService implements Upload {
   async checkBucket(bucketName: string) {
     const bucket = GCS_STORAGE.bucket(bucketName);
     const [exists] = await bucket.exists();
@@ -12,11 +13,8 @@ export class GcsService {
     }
     return bucket;
   }
-  async upload(
-    filename: string,
-    buffer: Buffer,
-    bucketName: string = "default",
-  ) {
+  async upload(buffer: Buffer, bucketName: string = "default") {
+    const filename = `book-${Date.now()}.jpg`;
     const bucket = await this.checkBucket(bucketName);
     const file = bucket.file(filename);
     await file.save(buffer);

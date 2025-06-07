@@ -6,8 +6,8 @@ import { BookSequelizeRepository } from "./repositories/sequelizeBook.repository
 import { AuthorModel, BookModel, EditorialModel, GenreModel } from "src/models";
 import { BOOKS_INTERFACE } from "src/constants";
 import { AuthModule } from "../auth/auth.module";
-import { GcsService } from "src/frameworks/cloud-storage/gcs.service";
 import { CsvExportService } from "src/common/services/csv-export.service";
+import { UploadModule } from "../upload/upload.module";
 
 @Module({
   imports: [
@@ -18,6 +18,7 @@ import { CsvExportService } from "src/common/services/csv-export.service";
       EditorialModel,
     ]),
     AuthModule,
+    UploadModule,
   ],
   controllers: [BooksController],
   providers: [
@@ -26,9 +27,8 @@ import { CsvExportService } from "src/common/services/csv-export.service";
       useClass: BookSequelizeRepository,
     },
     BooksService,
-    GcsService,
     CsvExportService,
   ],
-  exports: [SequelizeModule, GcsService],
+  exports: [SequelizeModule],
 })
 export class BooksModule {}
