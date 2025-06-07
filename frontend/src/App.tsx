@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import CreateBook from './pages/CreateBook';
 import Header from './components/Header';
 import BookDetails from './pages/BookDetails';
+import AdvancedSearch from './pages/AdvancedSearch';
 import { AuthProvider } from './context/AuthContext';
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <AuthProvider>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/advanced" element={<AdvancedSearch />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/create" element={<CreateBook />} />

@@ -47,7 +47,7 @@ const Home: React.FC = () => {
     <>
       <TitleBanner title="Listado de Libros" />
       <div className="flex justify-center items-center my-4">
-        <BooksTable data={books} />
+        <BooksTable data={books} includeExtras={true} />
       </div>
       <div className="flex justify-between items-center mb-4">
         {
