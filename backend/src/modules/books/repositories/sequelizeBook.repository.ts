@@ -9,24 +9,27 @@ import {
   CREATE_BOOK_EVENT,
   CREATE_EDITORIAL_EVENT,
   CREATE_GENRE_EVENT,
-} from "src/constants";
-
-import { Book } from "../books.entity";
-import { IBookRepository } from "../books.interface";
+} from "../../../constants";
 import {
   BookModel,
   GenreModel,
   AuthorModel,
   EditorialModel,
 } from "../../../models/";
+import { Book } from "../books.entity";
+import { IBookRepository } from "../books.interface";
 import { DetailedBook } from "../detailedBook.projection";
-import { EventTypeEnum } from "src/common/enums/eventType.enum";
+import { EventTypeEnum } from "../../../common/enums/eventType.enum";
+import {
+  buildSequelizeFilters,
+  groupByTables,
+  parseOrderBy,
+} from "../../../common/utils/sequelizeFilters.util";
 import { CreateBookDto, UpdateBookDto } from "../dto/books.dto";
-import { buildSequelizeFilters, groupByTables, parseOrderBy } from "src/common/utils/sequelizeFilters.util";
 import { CreateBookEventDto } from "src/modules/booksEvents/dto/bookEvent.dto";
+import { CreateGenreEventDto } from "src/modules/genreEvents/dto/genreEvent.dto";
 import { CreateAuthorEventDto } from "src/modules/authorEvents/dto/authorEvent.dto";
 import { CreateEditorialEventDto } from "src/modules/editorialEvents/dto/editorialEvent.dto";
-import { CreateGenreEventDto } from "src/modules/genreEvents/dto/genreEvent.dto";
 
 const DETAILED_BOOK_ATTRIBUTES = [
   "id",

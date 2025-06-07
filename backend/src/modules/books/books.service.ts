@@ -1,13 +1,13 @@
 import { Buffer } from "buffer";
 import { Injectable, Inject, NotFoundException } from "@nestjs/common";
 
-import { BOOKS_INTERFACE } from "src/constants";
+import { BOOKS_INTERFACE } from "../../constants";
 import { IBookRepository } from "./books.interface";
 import { DetailedBook } from "./detailedBook.projection";
-import { CreateBookDto, UpdateBookDto } from "./dto/books.dto";
 import { UploadService } from "../upload/upload.service";
-import { CsvExportService } from "src/common/services/csv-export.service";
-import { createPaginationLinks } from "src/common/utils/paginationLinks.util";
+import { CreateBookDto, UpdateBookDto } from "./dto/books.dto";
+import { CsvExportService } from "../../common/services/csv-export.service";
+import { createPaginationLinks } from "../../common/utils/paginationLinks.util";
 
 @Injectable()
 export class BooksService {
