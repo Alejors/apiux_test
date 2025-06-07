@@ -40,6 +40,11 @@ export class BooksService {
     return await this.booksRepository.findAll();
   }
 
+  async findAdvanced(filters: Record<string, string>): Promise<DetailedBook[]> {
+    console.log(`RECEIVED FILTERS: ${JSON.stringify(filters)}`);
+    return await this.booksRepository.advancedFilters(filters);
+  }
+
   async exportToCSV(): Promise<string> {
     const books = await this.findAll();
     const headers = Object.keys(books[0]).map((key) => ({

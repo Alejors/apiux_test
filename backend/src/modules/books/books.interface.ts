@@ -5,6 +5,7 @@ import { DetailedBook } from "./detailedBook.projection";
 export interface IBookRepository {
   create(book: CreateBookDto, userId: number): Promise<Book>;
   findAll(): Promise<DetailedBook[]>;
+  advancedFilters(filters: Record<string, string>): Promise<DetailedBook[]>;
   findAllPaginated(
     limit: number,
     offset: number,

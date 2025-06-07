@@ -22,7 +22,7 @@ import {
 import { DetailedBook } from "../detailedBook.projection";
 import { EventTypeEnum } from "src/common/enums/eventType.enum";
 import { CreateBookDto, UpdateBookDto } from "../dto/books.dto";
-import { buildSequelizeFilters } from "src/common/utils/sequelizeFilters.util";
+import { buildSequelizeFilters, groupByTables, parseOrderBy } from "src/common/utils/sequelizeFilters.util";
 import { CreateBookEventDto } from "src/modules/booksEvents/dto/bookEvent.dto";
 import { CreateAuthorEventDto } from "src/modules/authorEvents/dto/authorEvent.dto";
 import { CreateEditorialEventDto } from "src/modules/editorialEvents/dto/editorialEvent.dto";
@@ -181,6 +181,63 @@ export class BookSequelizeRepository implements IBookRepository {
       this.eventEmitter.emit(CREATE_BOOK_EVENT, eventBook);
       return this.toDomain(createdBook);
     });
+  }
+
+  async advancedFilters(
+    filters: Record<string, string>,
+  ): Promise<DetailedBook[]> {
+    const { order_by, ...rest } = filters;
+    const groupedFilters = groupByTables(rest);
+    const order = order_by ? [parseOrderBy(order_by)] : [];
+
+    const books = await this.bookModel.findAll({
+      attributes: DETAILED_BOOK_ATTRIBUTES,
+      where: groupedFilters["books"]
+        ? buildSequelizeFilters(groupedFilters["books"])
+        : {},
+      include: [
+        {
+          model: this.authorModel,
+          attributes: ["name"],
+          as: "author",
+          where: groupedFilters["author"]
+            ? buildSequelizeFilters(groupedFilters["author"])
+            : {},
+        },
+        {
+          model: this.editorialModel,
+          attributes: ["name"],
+          as: "editorial",
+          where: groupedFilters["editorial"]
+            ? buildSequelizeFilters(groupedFilters["editorial"])
+            : {},
+        },
+        {
+          model: this.genreModel,
+          attributes: ["name"],
+          as: "genre",
+          where: groupedFilters["genre"]
+            ? buildSequelizeFilters(groupedFilters["genre"])
+            : {},
+        },
+      ],
+      raw: true,
+      nest: true,
+      order: order.map(([modelAlias, field, direction]) =>
+        modelAlias === "books"
+          ? [field, direction]
+          : [
+              {
+                model: (this as any)[`${modelAlias}Model`],
+                as: modelAlias,
+              },
+              field,
+              direction,
+            ],
+      ),
+    });
+
+    return books.map((book) => this.toProjection(book));
   }
 
   async findAll(): Promise<DetailedBook[]> {

@@ -33,7 +33,6 @@ import { ResponseBookDTO } from "./dto/bookResponse.dto";
 import { FAILED_CODE, SUCCESS_CODE } from "src/constants";
 import { AuthGuard } from "src/common/guards/auth.guard";
 import { ExtractUser } from "src/common/decorators/extractUser.decorator";
-import { DetailedBook } from "./detailedBook.projection";
 
 interface PaginatedResponseType<T> extends ApiResponseType<T> {
   meta: object;
@@ -158,6 +157,51 @@ export class BooksController {
       meta,
       links,
     };
+  }
+
+  @Get("/advanced")
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: "Obtener Libros en base a filtros avanzados" })
+  @ApiResponse({
+    status: 200,
+    description: "Libros Obtenidos",
+    schema: {
+      example: {
+        message: "Mensaje de Éxito",
+        code: "Código de Éxito",
+        data: [
+          {
+            id: "ID del Libro",
+            title: "Título",
+            author: "Autor",
+            editorial: "Editorial",
+            genre: "Género",
+            price: "Precio",
+            availability: "Disponibilidad",
+            image_url: "URL de la imagen",
+          },
+        ],
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: "No Autorizado" })
+  async advancedSearch(
+    @Query() query: Record<string, string>,
+  ): Promise<ApiResponseType<ResponseBookDTO[]>> {
+    let message: string;
+    let code: string;
+    let data: ResponseBookDTO[] | null = null;
+    console.log(`THE QUERY: ${JSON.stringify(query)}`);
+    const books = await this.booksService.findAdvanced(query);
+    if (books.length > 0) {
+      data = books.map((book) => ResponseBookDTO.fromProjection(book));
+      message = "Books Obtained Successfully";
+      code = SUCCESS_CODE;
+    } else {
+      message = "No Books Obtained";
+      code = FAILED_CODE;
+    }
+    return { message, code, data };
   }
 
   @Get("/export")
