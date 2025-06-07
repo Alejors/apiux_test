@@ -1,7 +1,7 @@
-import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { Observable } from "rxjs";
 import { UnauthorizedException } from "@nestjs/common";
-import { AuthService } from "src/modules/auth/auth.service";
+import { AuthService } from "../../modules/auth/auth.service";
+import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -10,7 +10,11 @@ export class AuthGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
-    const token = request.cookies["access_token"];
+    const cookies = request.cookies;
+    if (!cookies) {
+      throw new UnauthorizedException("Not Logged In");
+    }
+    const token = cookies["access_token"];
     if (!token) {
       throw new UnauthorizedException("Not Logged In");
     }
@@ -18,7 +22,7 @@ export class AuthGuard implements CanActivate {
       const decoded = this.authService.verifyToken(token);
       request.user = decoded;
       return true;
-    } catch (Error) {
+    } catch {
       throw new UnauthorizedException("Invalid Token");
     }
   }
