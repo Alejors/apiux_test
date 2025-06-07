@@ -71,6 +71,21 @@ export default function AdvancedSearch() {
     if (priceRef.current) priceRef.current.value = "";
   }
 
+  function handleOrderSuffixChange(value: string) {
+    setOrderSuffix(value);
+    const filtersCheck = {...filters}
+    Object.keys(filtersCheck).forEach((key) => {
+      if (key === "order_by") {
+        const previousOrderValue = filtersCheck[key];
+        const [orderCriteria] = previousOrderValue.split("__");
+        const newOrderCriteria = `${orderCriteria}__${value}`;
+        filtersCheck[key] = newOrderCriteria;
+        setFilters(filtersCheck);
+        searchTrigger$.next(filtersCheck);
+      }
+    })
+  }
+
   function handleOrderChange(key: string, value: string) {
     const newFilters = { ...filters };
 
@@ -372,7 +387,7 @@ export default function AdvancedSearch() {
                 name="orderOperator"
                 value="asc"
                 checked={orderSuffix === "asc"}
-                onChange={(e) => setOrderSuffix(e.target.value)}
+                onChange={(e) => handleOrderSuffixChange(e.target.value)}
               />
               <label className="text-sm font-semibold ms-2">
                 Ascendiente
@@ -384,7 +399,7 @@ export default function AdvancedSearch() {
                 name="orderOperator"
                 value="desc"
                 checked={orderSuffix === "desc"}
-                onChange={(e) => setOrderSuffix(e.target.value)}
+                onChange={(e) => handleOrderSuffixChange(e.target.value)}
               />
               <label className="text-sm font-semibold ms-2">
                 Descendiente
