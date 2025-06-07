@@ -13,11 +13,11 @@ import { AuthService } from "./auth.service";
 import { CreateUserDto, AuthCredentialsDto } from "./dto";
 import { CookieInterceptor } from "./interceptors/cookie.interceptor";
 import { ResponseUserDTO } from "./dto";
-import { ApiResponseType } from "src/common/dto/responses.dto";
+import { ApiResponseType } from "../../common/dto/responses.dto";
 import { ClearCookieInterceptor } from "./interceptors/clearCookie.interceptor";
-import { AuthGuard } from "src/common/guards/auth.guard";
+import { AuthGuard } from "../../common/guards/auth.guard";
 
-const FAILED_ACCESS = "email and/or password incorrect.";
+const FAILED_ACCESS = "Correo y/o Contraseña Incorrectos.";
 @Controller("auth")
 @ApiTags("Authorization")
 export class AuthController {

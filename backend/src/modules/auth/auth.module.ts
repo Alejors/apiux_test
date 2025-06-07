@@ -3,9 +3,9 @@ import { JwtModule } from "@nestjs/jwt";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 
-import { UserModel } from "src/models";
+import { UserModel } from "../../models/user.model";
 import { AuthService } from "./auth.service";
-import { USERS_INTERFACE } from "src/constants";
+import { USERS_INTERFACE } from "../../constants";
 import { AuthController } from "./auth.controller";
 import { UserSequelizeRepository } from "./repositories/sequelizeUser.repository";
 

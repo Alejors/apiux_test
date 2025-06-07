@@ -8,7 +8,7 @@ import * as bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 
 import { User } from "./user.entity";
-import { USERS_INTERFACE } from "src/constants";
+import { USERS_INTERFACE } from "../../constants";
 import { IUserRepository } from "./user.interface";
 import { CreateUserDto, AuthCredentialsDto } from "./dto";
 
@@ -32,7 +32,7 @@ export class AuthService {
     return await bcrypt.compare(password, hashedPassword);
   }
 
-  verifyToken(token: string) {
+  verifyToken(token: string): any {
     return this.jwtService.verify(token);
   }
 
