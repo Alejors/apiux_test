@@ -32,11 +32,22 @@ export class BooksService {
       imageUrl = await this.uploadService.upload(imageBuffer);
       createBookDto.image_url = imageUrl;
     }
-    const bookCreated = await this.booksRepository.create(
-      createBookDto,
-      userId,
-    );
-    return await this.booksRepository.findOne({ id: bookCreated.id });
+    // Debido a consultas concurrentes la búsqueda anterior podría no dar resultados.
+    try {
+      const bookCreated = await this.booksRepository.create(
+        createBookDto,
+        userId,
+      );
+      return await this.booksRepository.findOne({ id: bookCreated.id });
+    } catch (error) {
+      if (
+        error.name === "SequelizeUniqueConstraintError" ||
+        error.name === "UniqueConstraintError"
+      ) {
+        throw new ConflictException("Book Already Exist");
+      }
+      throw error;
+    }
   }
 
   private async findAll(): Promise<DetailedBook[]> {
@@ -97,12 +108,22 @@ export class BooksService {
       imageUrl = await this.uploadService.upload(imageBuffer);
       updateBookDto.image_url = imageUrl;
     }
-    const bookUpdated = await this.booksRepository.update(
-      id,
-      updateBookDto,
-      userId,
-    );
-    return await this.booksRepository.findOne({ id: bookUpdated.id });
+    try {
+      const bookUpdated = await this.booksRepository.update(
+        id,
+        updateBookDto,
+        userId,
+      );
+      return await this.booksRepository.findOne({ id: bookUpdated.id });
+    } catch (error) {
+      if (
+        error.name === "SequelizeUniqueConstraintError" ||
+        error.name === "UniqueConstraintError"
+      ) {
+        throw new ConflictException("Book Already Exist");
+      }
+      throw error;
+    }
   }
 
   async remove(id: number, userId: number): Promise<void> {
