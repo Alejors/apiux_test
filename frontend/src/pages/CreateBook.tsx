@@ -2,9 +2,10 @@ import { z } from "zod";
 import { useState } from "react";
 import { Notify } from "notiflix";
 import { useForm } from "react-hook-form";
+import { useNavigate } from 'react-router-dom';
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import type { Book } from "../types/index";
+import type { Book, ApiResponse } from "../types/index";
 import { apiFetch } from "../services/requests";
 
 import TitleBanner from '../components/TitleBanner';
@@ -43,6 +44,8 @@ export default function BookCreateForm() {
     resolver: zodResolver(bookSchema),
   });
 
+  const navigate = useNavigate();
+
   const [submitting, setSubmitting] = useState(false);
 
   const onSubmit = async (data: FormData) => {
@@ -60,13 +63,14 @@ export default function BookCreateForm() {
     }
 
     try {
-      const res = await apiFetch<Book>("/books", {
+      const res = await apiFetch<ApiResponse<Book>>("/books", {
         method: "POST",
         body: formData,
       }, false);
       if (res.code === "success") {
         Notify.success("Libro creado");
         reset();
+        navigate(`/book/${res.data.id}`);
       } else {
         Notify.failure("Error al crear libro");
       }
