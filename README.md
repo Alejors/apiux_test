@@ -76,6 +76,20 @@ docker-compose exec api npm run seeders:run
    - Exportar la lista de libros en formato CSV
    - Acceder a la vista de Búsqueda Avanzada para filtrar por múltiples condiciones simultáneamente.
 
+### Búsqueda Avanzada
+
+En la vista de búsqueda avanzada se proporciona un formulario para poder agregar criterios, junto con botones para seleccionar si se desea igualdad exacta o similitud ("Contiene").
+
+Asimismo se puede elegir en qué orden queremos que venga las respuesta inicialmente, a pesar que después podemos ordenar los resultados gracias a la tabla dinámica.
+
+Ejemplo de Uso:
+
+1. Escribir en el espacio para título "El Princi" busca libros cuyo título sea exactamente eso. 
+2. Modificar el selector desde "Igual" a "Contiene" modifica la búsqueda para incluir todos los libros que contengan ese texto, retornaría "el principe" y "el principito" en caso que esos libros existan.
+3. Se puede seleccionar un criterio de ordenamiento por: título, autor, editorial, precio o género; asimismo si este criterio es ascendente o descendente.
+
+Esto genera una búsqueda con los criterios que se vayan agregando.
+
 ---
 
 ## 🧱 Arquitectura y decisiones de diseño
