@@ -1,16 +1,20 @@
 import { Module } from "@nestjs/common";
 import { SequelizeModule } from "@nestjs/sequelize";
+
 import { BooksService } from "./books.service";
-import { BooksController } from "./books.controller";
-import { BookSequelizeRepository } from "./repositories/sequelizeBook.repository";
-import { AuthorModel } from "../../models/author.model";
-import { BookModel } from "../../models/book.model";
-import { EditorialModel } from "../../models/editorial.model";
-import { GenreModel } from "../../models/genre.model";
 import { BOOKS_INTERFACE } from "src/constants";
+import { BooksController } from "./books.controller";
+
+import { BookModel } from "../../models/book.model";
+import { GenreModel } from "../../models/genre.model";
+import { AuthorModel } from "../../models/author.model";
+import { EditorialModel } from "../../models/editorial.model";
+
 import { AuthModule } from "../auth/auth.module";
 import { UploadModule } from "../upload/upload.module";
+
 import { CsvExportService } from "src/common/services/csv-export.service";
+import { BookSequelizeRepository } from "./repositories/sequelizeBook.repository";
 
 @Module({
   imports: [
