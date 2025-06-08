@@ -14,6 +14,13 @@ import { GenreModel } from "./genre.model";
   tableName: "books",
   paranoid: true,
   timestamps: true,
+  indexes: [
+    {
+      unique: true,
+      name: "unique_book_title_author_editorial",
+      fields: ["title", "author_id", "editorial_id"],
+    },
+  ],
 })
 export class BookModel extends Model {
   @Column({
