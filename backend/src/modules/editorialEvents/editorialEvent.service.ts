@@ -3,7 +3,7 @@ import { OnEvent } from "@nestjs/event-emitter";
 import {
   CREATE_EDITORIAL_EVENT,
   EDITORIAL_EVENT_INTERFACE,
-} from "src/constants";
+} from "../../constants";
 import { IEditorialEventsRepository } from "./editorialEvent.interface";
 import { CreateEditorialEventDto } from "./dto/editorialEvent.dto";
 

@@ -1,7 +1,7 @@
 import { Injectable, Inject } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
 
-import { CREATE_GENRE_EVENT, GENRE_EVENT_INTERFACE } from "src/constants";
+import { CREATE_GENRE_EVENT, GENRE_EVENT_INTERFACE } from "../../constants";
 import { IGenreEventsRepository } from "./genreEvent.interface";
 import { CreateGenreEventDto } from "./dto/genreEvent.dto";
 
