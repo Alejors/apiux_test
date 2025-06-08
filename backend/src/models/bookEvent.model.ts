@@ -7,7 +7,7 @@ import {
 } from "sequelize-typescript";
 import { BookModel } from "./book.model";
 import { UserModel } from "./user.model";
-import { EventTypeEnum } from "src/common/enums/eventType.enum";
+import { EventTypeEnum } from "../common/enums/eventType.enum";
 
 @Table({
   tableName: "book_events",

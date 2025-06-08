@@ -1,8 +1,9 @@
 import { Injectable, Inject } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
-import { CREATE_AUTHOR_EVENT, AUTHOR_EVENT_INTERFACE } from "src/constants";
-import { IAuthorEventsRepository } from "./authorEvent.interface";
+
 import { CreateAuthorEventDto } from "./dto/authorEvent.dto";
+import { IAuthorEventsRepository } from "./authorEvent.interface";
+import { CREATE_AUTHOR_EVENT, AUTHOR_EVENT_INTERFACE } from "../../constants";
 
 @Injectable()
 export class AuthorEventsService {

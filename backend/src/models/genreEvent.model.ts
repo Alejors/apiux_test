@@ -6,7 +6,7 @@ import {
   ForeignKey,
 } from "sequelize-typescript";
 import { UserModel } from "./user.model";
-import { EventTypeEnum } from "src/common/enums/eventType.enum";
+import { EventTypeEnum } from "../common/enums/eventType.enum";
 import { GenreModel } from "./genre.model";
 
 @Table({
