@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 
-import { AuthorEventModel } from "src/models";
+import { AuthorEventModel } from "../../../models/authorEvent.model";
 import { CreateAuthorEventDto } from "../dto/authorEvent.dto";
 import { IAuthorEventsRepository } from "../authorEvent.interface";
 

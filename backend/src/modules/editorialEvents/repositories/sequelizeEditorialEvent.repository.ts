@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 
-import { EditorialEventModel } from "src/models";
+import { EditorialEventModel } from "../../../models/editorialEvent.model";
 import { CreateEditorialEventDto } from "../dto/editorialEvent.dto";
 import { IEditorialEventsRepository } from "../editorialEvent.interface";
 

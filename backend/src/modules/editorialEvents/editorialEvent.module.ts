@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
 import { SequelizeModule } from "@nestjs/sequelize";
 
-import { EditorialEventModel } from "src/models";
-import { EDITORIAL_EVENT_INTERFACE } from "src/constants";
+import { EditorialEventModel } from "../../models/editorialEvent.model";
+import { EDITORIAL_EVENT_INTERFACE } from "../../constants";
 import { EditorialEventSequelizeRepository } from "./repositories/sequelizeEditorialEvent.repository";
 import { EditorialEventsService } from "./editorialEvent.service";
 
