@@ -87,7 +87,9 @@
       "/dist/",
       "/test-utils/",
       ".module.ts",
-      "/cloud-storage/"
+      "/cloud-storage/",
+      "src/main.ts",
+      "/models/index.js"
     ],
     "moduleFileExtensions": [
       "js",
