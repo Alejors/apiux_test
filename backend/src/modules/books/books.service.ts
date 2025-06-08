@@ -1,5 +1,5 @@
 import { Buffer } from "buffer";
-import { Injectable, Inject, NotFoundException } from "@nestjs/common";
+import { Injectable, Inject, NotFoundException, ConflictException } from "@nestjs/common";
 
 import { BOOKS_INTERFACE } from "../../constants";
 import { IBookRepository } from "./books.interface";
@@ -21,6 +21,12 @@ export class BooksService {
     userId: number,
     imageBuffer?: Buffer,
   ): Promise<DetailedBook | null> {
+    const bookExist = await this.findAdvanced({
+      "books.title__eq": createBookDto.title,
+      "author.name__eq": createBookDto.author,
+      "editorial.name__eq": createBookDto.editorial,
+    });
+    if (bookExist.length > 0) throw new ConflictException("Book Already Exist");
     let imageUrl: string | undefined;
     if (imageBuffer) {
       imageUrl = await this.uploadService.upload(imageBuffer);
