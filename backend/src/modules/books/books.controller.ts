@@ -28,11 +28,11 @@ import {
 
 import { BooksService } from "./books.service";
 import { CreateBookDto, UpdateBookDto } from "./dto/books.dto";
-import { ApiResponseType } from "src/common/dto/responses.dto";
+import { ApiResponseType } from "../../common/dto/responses.dto";
 import { ResponseBookDTO } from "./dto/bookResponse.dto";
-import { FAILED_CODE, SUCCESS_CODE } from "src/constants";
-import { AuthGuard } from "src/common/guards/auth.guard";
-import { ExtractUser } from "src/common/decorators/extractUser.decorator";
+import { FAILED_CODE, SUCCESS_CODE } from "../../constants";
+import { AuthGuard } from "../../common/guards/auth.guard";
+import { ExtractUser } from "../../common/decorators/extractUser.decorator";
 
 interface PaginatedResponseType<T> extends ApiResponseType<T> {
   meta: object;

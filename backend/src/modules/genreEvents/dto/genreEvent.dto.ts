@@ -1,6 +1,6 @@
 import { IsNumber } from "class-validator";
-import { BaseEventDto } from "src/common/dto/baseEvent.dto";
-import { EventTypeEnum } from "src/common/enums/eventType.enum";
+import { BaseEventDto } from "../../../common/dto/baseEvent.dto";
+import { EventTypeEnum } from "../../../common/enums/eventType.enum";
 
 export class CreateGenreEventDto extends BaseEventDto {
   @IsNumber()

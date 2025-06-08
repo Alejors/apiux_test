@@ -1,5 +1,5 @@
 import { IsObject, IsNumber, IsEnum, IsOptional } from "class-validator";
-import { EventTypeEnum } from "src/common/enums/eventType.enum";
+import { EventTypeEnum } from "../enums/eventType.enum";
 
 export class BaseEventDto {
   @IsNumber()

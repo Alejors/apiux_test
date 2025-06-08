@@ -1,6 +1,6 @@
 import { IsString, IsBoolean, IsNumber } from "class-validator";
 import { DetailedBook } from "../detailedBook.projection";
-import { capitalizeWords } from "src/common/utils/capitalization.util";
+import { capitalizeWords } from "../../../common/utils/capitalization.util";
 
 export class ResponseBookDTO {
   @IsNumber()
