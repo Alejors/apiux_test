@@ -79,6 +79,16 @@
     "typescript-eslint": "^8.20.0"
   },
   "jest": {
+    "coveragePathIgnorePatterns": [
+      "/seeders/",
+      "/node_modules/",
+      "/migrations/",
+      "/config/",
+      "/dist/",
+      "/test-utils/",
+      ".module.ts",
+      "/cloud-storage/"
+    ],
     "moduleFileExtensions": [
       "js",
       "json",
