@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { CreateBookEventDto } from "../dto/bookEvent.dto";
-import { BookEventModel } from "src/models/bookEvent.model";
+import { BookEventModel } from "../../../models/bookEvent.model";
 import { IBookEventsRepository } from "../bookEvent.interface";
 
 @Injectable()

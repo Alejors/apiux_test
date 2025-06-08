@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
 import { SequelizeModule } from "@nestjs/sequelize";
 
-import { BookEventModel } from "src/models/bookEvent.model";
-import { BOOK_EVENT_INTERFACE } from "src/constants";
+import { BookEventModel } from "../../models/bookEvent.model";
+import { BOOK_EVENT_INTERFACE } from "../../constants";
 import { BookEventSequelizeRepository } from "./repositories/sequelizeBookEvent.repository";
 import { BookEventsService } from "./bookEvent.service";
 
