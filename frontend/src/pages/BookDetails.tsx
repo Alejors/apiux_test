@@ -45,6 +45,8 @@ export default function BookDetails() {
     formData.append("author", data.author);
     formData.append("editorial", data.editorial);
     formData.append("genre", data.genre);
+    formData.append("price", data.price);
+    formData.append("availability", data.availability);
     if (data.image?.length) {
       formData.append("image", data.image[0]);
     }
@@ -60,7 +62,7 @@ export default function BookDetails() {
       );
 
       if (res.code === "success") {
-        Notify.success("Libro creado");
+        Notify.success("Libro Editado");
         const bookData = res.data;
         setBook(bookData);
         reset({
